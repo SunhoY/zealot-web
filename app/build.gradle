@@ -1,0 +1,48 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
+
+android {
+    compileSdkVersion 24
+    buildToolsVersion "24.0.1"
+
+    defaultConfig {
+        applicationId "io.harry.zealot"
+        minSdkVersion 19
+        targetSdkVersion 24
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+def supportLibraryVersion = "24.1.0"
+def playServiceVersion = "9.4.0"
+def daggerVersion = "2.6"
+def butterKnifeVersion = "8.2.1"
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    
+    compile "com.android.support:appcompat-v7:${supportLibraryVersion}"
+    compile "com.android.support:support-v4:${supportLibraryVersion}"
+    compile "com.android.support:design:${supportLibraryVersion}"
+
+    compile "com.google.android.gms:play-services:${playServiceVersion}"
+
+    compile "com.google.dagger:dagger:${daggerVersion}"
+
+    compile "com.jakewharton:butterknife:${butterKnifeVersion}"
+
+    apt "com.google.dagger:dagger-compiler:${daggerVersion}"
+
+    apt "com.jakewharton:butterknife-compiler:${butterKnifeVersion}"
+
+    testCompile 'junit:junit:4.12'
+
+    testCompile 'org.robolectric:robolectric:3.1.1'
+}
