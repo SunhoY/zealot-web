@@ -8,7 +8,7 @@ android {
     defaultConfig {
         applicationId "io.harry.zealot"
         minSdkVersion 19
-        targetSdkVersion 24
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0"
     }
@@ -20,7 +20,7 @@ android {
     }
 }
 
-def supportLibraryVersion = "24.1.0"
+def supportLibraryVersion = "24.1.1"
 def playServiceVersion = "9.4.0"
 def daggerVersion = "2.6"
 def butterKnifeVersion = "8.2.1"
@@ -38,6 +38,8 @@ dependencies {
 
     compile "com.jakewharton:butterknife:${butterKnifeVersion}"
 
+    compile 'uk.co.chrisjenx:calligraphy:2.2.0'
+
     apt "com.google.dagger:dagger-compiler:${daggerVersion}"
 
     apt "com.jakewharton:butterknife-compiler:${butterKnifeVersion}"
@@ -45,4 +47,14 @@ dependencies {
     testCompile 'junit:junit:4.12'
 
     testCompile 'org.robolectric:robolectric:3.1.1'
+
+    testCompile ('com.squareup.assertj:assertj-android:1.1.1') {
+        exclude module: "support-annotations"
+    }
+    testCompile 'org.khronos:opengl-api:gl1.1-android-2.1_r1'
+    testCompile 'org.mockito:mockito-core:1.10.19'
+
+    testApt "com.google.dagger:dagger-compiler:${daggerVersion}"
+
+    testApt "com.jakewharton:butterknife-compiler:${butterKnifeVersion}"
 }
