@@ -10,7 +10,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.harry.zealot.R;
-import io.harry.zealot.wrapper.AnimationHelper;
+import io.harry.zealot.helper.AnimationHelper;
 
 public class SplashActivity extends ZealotBaseActivity implements Animation.AnimationListener{
 

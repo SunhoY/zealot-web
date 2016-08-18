@@ -4,7 +4,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import io.harry.zealot.wrapper.AnimationHelper;
+import io.harry.zealot.helper.AnimationHelper;
 
 import static org.mockito.Mockito.mock;
 

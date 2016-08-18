@@ -58,3 +58,5 @@ dependencies {
 
     testApt "com.jakewharton:butterknife-compiler:${butterKnifeVersion}"
 }
+
+apply plugin: 'com.google.gms.google-services'

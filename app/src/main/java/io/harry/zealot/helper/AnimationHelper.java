@@ -1,4 +1,4 @@
-package io.harry.zealot.wrapper;
+package io.harry.zealot.helper;
 
 import android.content.Context;
 import android.view.View;

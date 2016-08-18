@@ -6,7 +6,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import io.harry.zealot.wrapper.AnimationHelper;
+import io.harry.zealot.helper.AnimationHelper;
 
 @Module(includes = ContextModule.class)
 public class AnimationModule {

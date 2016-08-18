@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "11898705907",
+    "firebase_url": "https://zealot-5ba51.firebaseio.com",
+    "project_id": "zealot-5ba51",
+    "storage_bucket": "zealot-5ba51.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:11898705907:android:cdc1d56503779ab8",
+        "android_client_info": {
+          "package_name": "io.harry.zealot"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "11898705907-gjukgimrr2bbj6ap7g3artvn00ernen8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAu8FV4WQcjdaQaWFLSdHnGvS3rejPx3-c"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
