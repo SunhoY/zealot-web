@@ -40,6 +40,8 @@ dependencies {
 
     compile 'uk.co.chrisjenx:calligraphy:2.2.0'
 
+    compile 'org.projectlombok:lombok:1.16.10'
+
     apt "com.google.dagger:dagger-compiler:${daggerVersion}"
 
     apt "com.jakewharton:butterknife-compiler:${butterKnifeVersion}"

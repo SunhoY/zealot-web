@@ -13,6 +13,9 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -21,10 +24,12 @@ import io.harry.zealot.BuildConfig;
 import io.harry.zealot.R;
 import io.harry.zealot.TestZealotApplication;
 import io.harry.zealot.adapter.GagPagerAdapter;
+import io.harry.zealot.service.GagService;
 import io.harry.zealot.wrapper.GagPagerAdapterWrapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -38,7 +43,9 @@ public class TestAjaeActivityTest {
     ViewPager gagPager;
 
     @Inject
-    GagPagerAdapterWrapper gagPagerAdapterWrapper;
+    GagPagerAdapterWrapper mockGagPagerAdapterWrapper;
+    @Inject
+    GagService mockGagService;
 
     @Mock
     private GagPagerAdapter mockGagPagerAdapter;
@@ -48,7 +55,7 @@ public class TestAjaeActivityTest {
         ((TestZealotApplication) RuntimeEnvironment.application).getZealotComponent().inject(this);
         MockitoAnnotations.initMocks(this);
 
-        when(gagPagerAdapterWrapper.getGagPagerAdapter(any(FragmentManager.class)))
+        when(mockGagPagerAdapterWrapper.getGagPagerAdapter(any(FragmentManager.class), anyListOf(Integer.class)))
             .thenReturn(mockGagPagerAdapter);
 
         subject = Robolectric.buildActivity(TestAjaeActivity.class).create().get();
@@ -57,8 +64,15 @@ public class TestAjaeActivityTest {
     }
 
     @Test
+    public void onCreate_callGagServiceToFetchResourceURLs() throws Exception {
+        verify(mockGagService).getGagImageURLs(3);
+    }
+
+    @Test
     public void onCreate_getPagerAdapterFromGagPagerAdapterWrapper_withFragmentManager() throws Exception {
-        verify(gagPagerAdapterWrapper).getGagPagerAdapter(subject.getSupportFragmentManager());
+        List<Integer> resourceIds = Arrays.asList(R.drawable.ajae_2, R.drawable.ajae_7, R.drawable.ajae_8);
+
+        verify(mockGagPagerAdapterWrapper).getGagPagerAdapter(subject.getSupportFragmentManager(), resourceIds);
     }
 
     @Test
