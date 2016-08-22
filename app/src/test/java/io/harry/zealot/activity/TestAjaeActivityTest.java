@@ -29,6 +29,7 @@ import io.harry.zealot.wrapper.GagPagerAdapterWrapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -36,7 +37,6 @@ import static org.mockito.Mockito.when;
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class)
 public class TestAjaeActivityTest {
-
     private TestAjaeActivity subject;
 
     @BindView(R.id.gag_pager)
@@ -55,8 +55,10 @@ public class TestAjaeActivityTest {
         ((TestZealotApplication) RuntimeEnvironment.application).getZealotComponent().inject(this);
         MockitoAnnotations.initMocks(this);
 
-        when(mockGagPagerAdapterWrapper.getGagPagerAdapter(any(FragmentManager.class), anyListOf(Integer.class)))
+        when(mockGagPagerAdapterWrapper.getGagPagerAdapter(any(FragmentManager.class), anyListOf(String.class)))
             .thenReturn(mockGagPagerAdapter);
+        when(mockGagService.getGagImageURLs(anyInt()))
+                .thenReturn(Arrays.asList("http://gag1.png", "http://gag2.png", "http://gag3.png"));
 
         subject = Robolectric.buildActivity(TestAjaeActivity.class).create().get();
 
@@ -69,10 +71,10 @@ public class TestAjaeActivityTest {
     }
 
     @Test
-    public void onCreate_getPagerAdapterFromGagPagerAdapterWrapper_withFragmentManager() throws Exception {
-        List<Integer> resourceIds = Arrays.asList(R.drawable.ajae_2, R.drawable.ajae_7, R.drawable.ajae_8);
+    public void onCreate_getPagerAdapterWithRequestSizeOfFragments() throws Exception {
+        List<String> expectedURLs = Arrays.asList("http://gag1.png", "http://gag2.png", "http://gag3.png");
 
-        verify(mockGagPagerAdapterWrapper).getGagPagerAdapter(subject.getSupportFragmentManager(), resourceIds);
+        verify(mockGagPagerAdapterWrapper).getGagPagerAdapter(subject.getSupportFragmentManager(), expectedURLs);
     }
 
     @Test

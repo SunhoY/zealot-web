@@ -1,5 +1,6 @@
 package io.harry.zealot.activity;
 
+import android.content.Intent;
 import android.view.View;
 import android.view.animation.Animation;
 
@@ -27,6 +28,7 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class)
@@ -81,6 +83,14 @@ public class SplashActivityTest {
         subject.onAnimationEnd(mock(Animation.class));
 
         assertThat(viewContainer.getVisibility()).isEqualTo(View.GONE);
+    }
+
+    @Test
+    public void onAnimationEnd_launchesTestAjaeActivity() throws Exception {
+        subject.onAnimationEnd(mock(Animation.class));
+
+        Intent expectedIntent = new Intent(subject, TestAjaeActivity.class);
+        assertThat(shadowOf(subject).getNextStartedActivity().getComponent()).isEqualTo(expectedIntent.getComponent());
     }
 
     @Test

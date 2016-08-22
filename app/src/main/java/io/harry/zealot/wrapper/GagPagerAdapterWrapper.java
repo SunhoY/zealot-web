@@ -7,7 +7,7 @@ import java.util.List;
 import io.harry.zealot.adapter.GagPagerAdapter;
 
 public class GagPagerAdapterWrapper {
-    public GagPagerAdapter getGagPagerAdapter(FragmentManager fragmentManager, List<Integer> drawableResourceIds) {
-        return new GagPagerAdapter(fragmentManager);
+    public GagPagerAdapter getGagPagerAdapter(FragmentManager fragmentManager, List<String> gagURLs) {
+        return new GagPagerAdapter(fragmentManager, gagURLs);
     }
 }

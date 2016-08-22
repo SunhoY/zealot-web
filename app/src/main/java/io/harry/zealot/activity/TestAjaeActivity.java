@@ -37,7 +37,7 @@ public class TestAjaeActivity extends ZealotBaseActivity {
 
         List<String> gagURLs = gagService.getGagImageURLs(3);
 
-        gagPagerAdapter = gagPagerAdapterWrapper.getGagPagerAdapter(getSupportFragmentManager(), null);
+        gagPagerAdapter = gagPagerAdapterWrapper.getGagPagerAdapter(getSupportFragmentManager(), gagURLs);
         gagPager.setAdapter(gagPagerAdapter);
     }
 }

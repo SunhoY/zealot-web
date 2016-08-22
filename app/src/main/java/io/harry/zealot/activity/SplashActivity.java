@@ -1,5 +1,6 @@
 package io.harry.zealot.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -49,6 +50,7 @@ public class SplashActivity extends ZealotBaseActivity implements Animation.Anim
     @Override
     public void onAnimationEnd(Animation animation) {
         viewContainer.setVisibility(View.GONE);
+        startActivity(new Intent(this, TestAjaeActivity.class));
         finish();
     }
 

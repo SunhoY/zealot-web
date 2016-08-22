@@ -13,7 +13,8 @@ public class ZealotApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        zealotComponent = DaggerZealotComponent.builder().contextModule(new ContextModule(this)).build();
+        zealotComponent = DaggerZealotComponent.builder()
+                .contextModule(new ContextModule(this)).build();
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
                 .setFontAttrId(R.attr.fontPath)
                 .build());
