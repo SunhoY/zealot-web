@@ -1,5 +1,7 @@
 package io.harry.zealot.module;
 
+import android.content.Context;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -15,7 +17,7 @@ public class GagTestModule {
     }
 
     @Provides @Singleton
-    public GagService provideGagService() {
-        return new GagService();
+    public GagService provideGagService(Context context) {
+        return new GagService(context);
     }
 }

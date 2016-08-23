@@ -6,6 +6,7 @@ import android.support.v4.view.ViewPager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.Robolectric;
@@ -25,11 +26,11 @@ import io.harry.zealot.R;
 import io.harry.zealot.TestZealotApplication;
 import io.harry.zealot.adapter.GagPagerAdapter;
 import io.harry.zealot.service.GagService;
+import io.harry.zealot.service.ServiceCallback;
 import io.harry.zealot.wrapper.GagPagerAdapterWrapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -57,8 +58,6 @@ public class TestAjaeActivityTest {
 
         when(mockGagPagerAdapterWrapper.getGagPagerAdapter(any(FragmentManager.class), anyListOf(String.class)))
             .thenReturn(mockGagPagerAdapter);
-        when(mockGagService.getGagImageURLs(anyInt()))
-                .thenReturn(Arrays.asList("http://gag1.png", "http://gag2.png", "http://gag3.png"));
 
         subject = Robolectric.buildActivity(TestAjaeActivity.class).create().get();
 
@@ -67,7 +66,7 @@ public class TestAjaeActivityTest {
 
     @Test
     public void onCreate_callGagServiceToFetchResourceURLs() throws Exception {
-        verify(mockGagService).getGagImageURLs(3);
+        verify(mockGagService).getGagImageFileNames(Matchers.<ServiceCallback<List<String>>>any());
     }
 
     @Test

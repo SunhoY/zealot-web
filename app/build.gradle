@@ -32,8 +32,10 @@ dependencies {
     compile "com.android.support:support-v4:${supportLibraryVersion}"
     compile "com.android.support:design:${supportLibraryVersion}"
 
+    compile "com.google.firebase:firebase-core:${playServiceVersion}"
     compile "com.google.firebase:firebase-storage:${playServiceVersion}"
     compile "com.google.firebase:firebase-database:${playServiceVersion}"
+    compile "com.google.firebase:firebase-auth:${playServiceVersion}"
     compile "com.google.android.gms:play-services:${playServiceVersion}"
 
     compile "com.google.dagger:dagger:${daggerVersion}"

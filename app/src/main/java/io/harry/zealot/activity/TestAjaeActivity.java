@@ -13,6 +13,7 @@ import butterknife.ButterKnife;
 import io.harry.zealot.R;
 import io.harry.zealot.adapter.GagPagerAdapter;
 import io.harry.zealot.service.GagService;
+import io.harry.zealot.service.ServiceCallback;
 import io.harry.zealot.wrapper.GagPagerAdapterWrapper;
 
 public class TestAjaeActivity extends ZealotBaseActivity {
@@ -35,9 +36,12 @@ public class TestAjaeActivity extends ZealotBaseActivity {
         ButterKnife.bind(this);
         zealotComponent.inject(this);
 
-        List<String> gagURLs = gagService.getGagImageURLs(3);
-
-        gagPagerAdapter = gagPagerAdapterWrapper.getGagPagerAdapter(getSupportFragmentManager(), gagURLs);
-        gagPager.setAdapter(gagPagerAdapter);
+        gagService.getGagImageFileNames(new ServiceCallback<List<String>>() {
+            @Override
+            public void onSuccess(List<String> result) {
+                gagPagerAdapter = gagPagerAdapterWrapper.getGagPagerAdapter(getSupportFragmentManager(), result);
+                gagPager.setAdapter(gagPagerAdapter);
+            }
+        });
     }
 }
