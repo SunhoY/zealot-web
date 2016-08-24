@@ -1,6 +1,6 @@
 package io.harry.zealot.adapter;
 
-import android.support.v4.app.Fragment;
+import android.net.Uri;
 import android.support.v4.app.FragmentManager;
 
 import org.junit.Before;
@@ -29,21 +29,31 @@ public class GagPagerAdapterTest {
     public void setUp() throws Exception {
         FragmentManager supportFragmentManager = Robolectric.buildActivity(SplashActivity.class)
                 .create().get().getSupportFragmentManager();
-        List<String> URLs = Arrays.asList("http://gag1.png", "http://gag2.png", "http://gag3.png");
-        subject = new GagPagerAdapter(supportFragmentManager, URLs);
+
+        List<Uri> uris = Arrays.asList(
+                Uri.parse("http://gag1.png"),
+                Uri.parse("http://gag2.png"),
+                Uri.parse("http://gag3.png"));
+
+        subject = new GagPagerAdapter(supportFragmentManager, uris);
     }
 
     @Test
     public void getItem_returnsFragmentAtRequestedPosition() throws Exception {
-        Fragment firstFragment = subject.getItem(0);
+        GagFragment firstFragment = (GagFragment) subject.getItem(0);
 
-        String gagURL1 = ((GagFragment) firstFragment).getURL();
-        assertThat(gagURL1).isEqualTo("http://gag1.png");
+        assertThat(firstFragment.getArguments().get("gagImageUri"))
+                .isEqualTo(Uri.parse("http://gag1.png"));
 
-        Fragment secondFragment = subject.getItem(1);
+        GagFragment secondFragment = (GagFragment) subject.getItem(1);
 
-        String gagURL2 = ((GagFragment) secondFragment).getURL();
-        assertThat(gagURL2).isEqualTo("http://gag2.png");
+        assertThat(secondFragment.getArguments().get("gagImageUri"))
+                .isEqualTo(Uri.parse("http://gag2.png"));
+
+        GagFragment thirdFragment = (GagFragment) subject.getItem(2);
+
+        assertThat(thirdFragment.getArguments().get("gagImageUri"))
+                .isEqualTo(Uri.parse("http://gag3.png"));
     }
 
     @Test

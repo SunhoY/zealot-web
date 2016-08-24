@@ -52,10 +52,10 @@ public class GagService {
         });
     }
 
-    public void getGagImageURLs(final List<String> fileNames, final ServiceCallback<List<String>> serviceCallback) {
+    public void getGagImageUris(final List<String> fileNames, final ServiceCallback<List<Uri>> serviceCallback) {
         StorageReference storageReference = firebaseHelper.getStorageReference("gags");
 
-        final List<String> imageURLs = new ArrayList<>();
+        final List<Uri> imageUris = new ArrayList<>();
 
         for(String fileName : fileNames) {
             StorageReference file = storageReference.child(fileName);
@@ -67,9 +67,9 @@ public class GagService {
                         return;
                     }
 
-                    imageURLs.add(downloadUrl.toString());
-                    if(imageURLs.size() == fileNames.size()) {
-                        serviceCallback.onSuccess(imageURLs);
+                    imageUris.add(downloadUrl);
+                    if(imageUris.size() == fileNames.size()) {
+                        serviceCallback.onSuccess(imageUris);
                     }
                 }
             });

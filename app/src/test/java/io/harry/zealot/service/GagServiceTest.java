@@ -55,6 +55,8 @@ public class GagServiceTest {
     @Mock
     ServiceCallback<List<String>> mockStringListServiceCallback;
     @Mock
+    ServiceCallback<List<Uri>> mockUriListServiceCallback;
+    @Mock
     StorageReference firstFile;
     @Mock
     StorageReference secondFile;
@@ -110,8 +112,8 @@ public class GagServiceTest {
     }
 
     @Test
-    public void getGagImageURLs_getsStorageReferenceFromFirebaseHelper() throws Exception {
-        subject.getGagImageURLs(new ArrayList<String>(), mockStringListServiceCallback);
+    public void getGagImageUris_getsStorageReferenceFromFirebaseHelper() throws Exception {
+        subject.getGagImageUris(new ArrayList<String>(), mockUriListServiceCallback);
 
         verify(mockFirebaseHelper).getStorageReference("gags");
     }
@@ -120,7 +122,7 @@ public class GagServiceTest {
     public void getGagImageURLs_getFilesFromStorageReference() throws Exception {
         createMockStorageReferenceForTwoFiles("0.jpg", "1.jpg");
 
-        subject.getGagImageURLs(Arrays.asList("0.jpg", "1.jpg"), mockStringListServiceCallback);
+        subject.getGagImageUris(Arrays.asList("0.jpg", "1.jpg"), mockUriListServiceCallback);
 
         verify(mockStorageReference).child("0.jpg");
         verify(mockStorageReference).child("1.jpg");
@@ -130,7 +132,7 @@ public class GagServiceTest {
     public void getGagImageURLs_getsMetadataFromFile() throws Exception {
         createMockStorageReferenceForTwoFiles("0.jpg", "1.jpg");
 
-        subject.getGagImageURLs(Arrays.asList("0.jpg", "1.jpg"), mockStringListServiceCallback);
+        subject.getGagImageUris(Arrays.asList("0.jpg", "1.jpg"), mockUriListServiceCallback);
 
         verify(firstFile).getMetadata();
         verify(secondFile).getMetadata();
@@ -140,7 +142,7 @@ public class GagServiceTest {
     public void getGagImageURLs_addSuccessListenerOnFileMetaData() throws Exception {
         createMockStorageReferenceForTwoFiles("0.jpg", "1.jpg");
 
-        subject.getGagImageURLs(Arrays.asList("0.jpg", "1.jpg"), mockStringListServiceCallback);
+        subject.getGagImageUris(Arrays.asList("0.jpg", "1.jpg"), mockUriListServiceCallback);
 
         verify(mockFirstTask).addOnSuccessListener(Matchers.<OnSuccessListener<StorageMetadata>>any());
         verify(mockSecondTask).addOnSuccessListener(Matchers.<OnSuccessListener<StorageMetadata>>any());
@@ -150,7 +152,7 @@ public class GagServiceTest {
     public void getGagImageURLs_successListenerRunsServiceCallbackWithImageURL() throws Exception {
         createMockStorageReferenceForTwoFiles("0.jpg", "1.jpg");
 
-        subject.getGagImageURLs(Arrays.asList("0.jpg", "1.jpg"), mockStringListServiceCallback);
+        subject.getGagImageUris(Arrays.asList("0.jpg", "1.jpg"), mockUriListServiceCallback);
 
         verify(mockFirstTask).addOnSuccessListener(onSuccessListenerCaptor.capture());
         verify(mockSecondTask).addOnSuccessListener(onSuccessListenerCaptor.capture());
@@ -158,12 +160,15 @@ public class GagServiceTest {
         StorageMetadata mockStorageMetaData0 = createMockStorageMetaData("http://myhost/0.jpg");
         onSuccessListenerCaptor.getAllValues().get(0).onSuccess(mockStorageMetaData0);
 
-        verify(mockStringListServiceCallback, never()).onSuccess(anyListOf(String.class));
+        verify(mockUriListServiceCallback, never()).onSuccess(anyListOf(Uri.class));
 
         StorageMetadata mockStorageMetaData1 = createMockStorageMetaData("http://myhost/1.jpg");
         onSuccessListenerCaptor.getAllValues().get(1).onSuccess(mockStorageMetaData1);
 
-        verify(mockStringListServiceCallback).onSuccess(Arrays.asList("http://myhost/0.jpg", "http://myhost/1.jpg"));
+        verify(mockUriListServiceCallback).onSuccess(
+                Arrays.asList(
+                        Uri.parse("http://myhost/0.jpg"),
+                        Uri.parse("http://myhost/1.jpg")));
     }
 
     @NonNull
@@ -199,8 +204,7 @@ public class GagServiceTest {
 
     private StorageMetadata createMockStorageMetaData(String url){
         StorageMetadata mockStorageMetaData = mock(StorageMetadata.class);
-        Uri mockUri = mock(Uri.class);
-        when(mockUri.toString()).thenReturn(url);
+        Uri mockUri = Uri.parse(url);
         when(mockStorageMetaData.getDownloadUrl()).thenReturn(mockUri);
 
         return mockStorageMetaData;
