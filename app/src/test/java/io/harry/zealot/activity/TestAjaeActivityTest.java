@@ -4,8 +4,12 @@ import android.content.Context;
 import android.net.Uri;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.view.animation.Animation;
+import android.widget.ImageView;
 
+import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.google.android.gms.vision.CameraSource;
+import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
 
 import org.junit.Before;
@@ -32,6 +36,7 @@ import io.harry.zealot.BuildConfig;
 import io.harry.zealot.R;
 import io.harry.zealot.TestZealotApplication;
 import io.harry.zealot.adapter.GagPagerAdapter;
+import io.harry.zealot.helper.AnimationHelper;
 import io.harry.zealot.service.GagService;
 import io.harry.zealot.service.ServiceCallback;
 import io.harry.zealot.view.TestAjaePreview;
@@ -43,6 +48,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.robolectric.RuntimeEnvironment.application;
@@ -56,6 +63,10 @@ public class TestAjaeActivityTest {
     ViewPager gagPager;
     @BindView(R.id.test_ajae_preview)
     TestAjaePreview testAjaePreview;
+    @BindView(R.id.progress)
+    RoundCornerProgressBar progress;
+    @BindView(R.id.ajae_icon)
+    ImageView ajaeIcon;
 
     @Inject
     GagPagerAdapterWrapper mockGagPagerAdapterWrapper;
@@ -65,6 +76,8 @@ public class TestAjaeActivityTest {
     ZealotFaceDetectorWrapper mockFaceDetectorWrapper;
     @Inject
     ZealotCameraSourceWrapper mockCameraSourceWrapper;
+    @Inject
+    AnimationHelper mockAnimationHelper;
 
     @Mock
     private GagPagerAdapter mockGagPagerAdapter;
@@ -76,6 +89,7 @@ public class TestAjaeActivityTest {
     ArgumentCaptor<ServiceCallback<List<String>>> stringListServiceCallbackCaptor;
     @Captor
     ArgumentCaptor<ServiceCallback<List<Uri>>> uriListServiceCallbackCaptor;
+    private Animation mockScaleXYAnimation;
 
 
     @Before
@@ -84,11 +98,13 @@ public class TestAjaeActivityTest {
         MockitoAnnotations.initMocks(this);
 
         testFaceDetector = new FaceDetector.Builder(application).build();
+        mockScaleXYAnimation = mock(Animation.class);
 
         when(mockGagPagerAdapterWrapper.getGagPagerAdapter(any(FragmentManager.class), anyListOf(Uri.class)))
             .thenReturn(mockGagPagerAdapter);
         when(mockFaceDetectorWrapper.getFaceDetector(any(Context.class))).thenReturn(testFaceDetector);
         when(mockCameraSourceWrapper.getCameraSource(any(Context.class), eq(testFaceDetector))).thenReturn(mockCameraSource);
+        when(mockAnimationHelper.loadAnimation(R.animator.scale_xy)).thenReturn(mockScaleXYAnimation);
 
         subject = Robolectric.buildActivity(TestAjaeActivity.class).create().get();
 
@@ -159,5 +175,44 @@ public class TestAjaeActivityTest {
         uriListServiceCallbackCaptor.getValue().onSuccess(actualUris);
 
         assertThat(gagPager.getAdapter()).isEqualTo(mockGagPagerAdapter);
+    }
+
+    @Test
+    public void onFaceDetect_fillsProgressBar_whenFaceIsSmiling() throws Exception {
+        faceDetectsWithSmileyProbability(.40f);
+
+        Robolectric.getForegroundThreadScheduler().advanceToLastPostedRunnable();
+
+        assertThat(progress.getProgress()).isEqualTo(10);
+    }
+
+    @Test
+    public void onFaceDetect_doesNotFillProgressBar_whenFaceIsNotSmiling() throws Exception {
+        faceDetectsWithSmileyProbability(.20f);
+
+        Robolectric.getForegroundThreadScheduler().advanceToLastPostedRunnable();
+
+        assertThat(progress.getProgress()).isEqualTo(.0f);
+    }
+
+    @Test
+    public void onAjaePowerChanges_animatesAjaeIcon_whenAjaePowerIsFull() throws Exception {
+        progress.setProgress(1000.f);
+
+        verify(mockAnimationHelper).startAnimation(ajaeIcon, mockScaleXYAnimation);
+    }
+
+    @Test
+    public void onAjaePowerChanges_doesNotAnimateAjaeIcon_whenAjaePowerIsNotEnough() throws Exception {
+        progress.setProgress(999.f);
+
+        verify(mockAnimationHelper, never()).startAnimation(any(ImageView.class), any(Animation.class));
+    }
+
+    private void faceDetectsWithSmileyProbability(float smileyProbability) {
+        Face mockFace = mock(Face.class);
+        when(mockFace.getIsSmilingProbability()).thenReturn(smileyProbability);
+
+        subject.onFaceDetect(mockFace);
     }
 }

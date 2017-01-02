@@ -41,7 +41,7 @@ public class TestAjaePreview extends SurfaceView implements SurfaceHolder.Callba
         this.cameraSource = cameraSource;
     }
 
-    public void start() {
+    private void start() {
         if(PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA)) {
             try {
                 cameraSource.start(getHolder());

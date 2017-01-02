@@ -59,12 +59,12 @@ public class SplashActivityTest {
     public void onResume_loadsFadeOutAnimationFromAnimationWrapper() throws Exception {
         subject.onResume();
 
-        verify(mockAnimationHelper).loadAnimation(R.anim.fade_out);
+        verify(mockAnimationHelper).loadAnimation(R.animator.fade_out);
     }
 
     @Test
     public void afterLoadingAnimation_setsAnimationListenerAsSubject() throws Exception {
-        when(mockAnimationHelper.loadAnimation(R.anim.fade_out)).thenReturn(mockAnimation);
+        when(mockAnimationHelper.loadAnimation(R.animator.fade_out)).thenReturn(mockAnimation);
 
         subject.onResume();
 

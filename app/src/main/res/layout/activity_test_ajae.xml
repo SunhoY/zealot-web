@@ -2,18 +2,44 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/ajae_point"
+    <android.support.v7.widget.LinearLayoutCompat
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:textSize="30sp"
-        />
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:padding="5dp"
+        >
+
+        <ImageView
+            android:layout_marginStart="5dp"
+            android:id="@+id/ajae_icon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/app_icon"
+            android:layout_gravity="center"
+            />
+
+        <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
+            android:layout_gravity="center"
+            android:id="@+id/progress"
+            android:layout_marginStart="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            app:rcProgress="0"
+            app:rcMax="1000"
+            app:rcRadius="10dp"
+            app:rcBackgroundPadding="3dp"
+            app:rcReverse="false"
+            app:rcProgressColor="@color/hot_pink"
+            app:rcBackgroundColor="@color/gray" />
+
+    </android.support.v7.widget.LinearLayoutCompat>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/gag_pager"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent">
 
     </android.support.v4.view.ViewPager>

@@ -36,7 +36,7 @@ public class SplashActivity extends ZealotBaseActivity implements Animation.Anim
     protected void onResume() {
         super.onResume();
 
-        fadeOutAnimation = animationHelper.loadAnimation(R.anim.fade_out);
+        fadeOutAnimation = animationHelper.loadAnimation(R.animator.fade_out);
         fadeOutAnimation.setAnimationListener(this);
 
         animationHelper.startAnimation(viewContainer, fadeOutAnimation);

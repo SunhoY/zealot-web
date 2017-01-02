@@ -5,8 +5,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
-import android.widget.TextView;
+import android.view.animation.Animation;
+import android.widget.ImageView;
 
+import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
+import com.akexorcist.roundcornerprogressbar.common.BaseRoundCornerProgressBar;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.MultiProcessor;
 import com.google.android.gms.vision.face.Face;
@@ -20,6 +23,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.harry.zealot.R;
 import io.harry.zealot.adapter.GagPagerAdapter;
+import io.harry.zealot.helper.AnimationHelper;
 import io.harry.zealot.listener.FaceListener;
 import io.harry.zealot.service.GagService;
 import io.harry.zealot.service.ServiceCallback;
@@ -33,12 +37,16 @@ import io.harry.zealot.wrapper.GagPagerAdapterWrapper;
 
 public class TestAjaeActivity extends ZealotBaseActivity implements FaceListener {
 
+    private final float AJAE_POWER_UNIT = 10.0f;
+
     @BindView(R.id.gag_pager)
     ViewPager gagPager;
     @BindView(R.id.test_ajae_preview)
     TestAjaePreview testAjaePreview;
-    @BindView(R.id.ajae_point)
-    TextView ajaePoint;
+    @BindView(R.id.progress)
+    RoundCornerProgressBar progress;
+    @BindView(R.id.ajae_icon)
+    ImageView ajaeIcon;
 
     @Inject
     GagPagerAdapterWrapper gagPagerAdapterWrapper;
@@ -53,12 +61,16 @@ public class TestAjaeActivity extends ZealotBaseActivity implements FaceListener
     ZealotFaceFactoryWrapper faceFactoryWrapper;
     @Inject
     ZealotCameraSourceWrapper cameraSourceWrapper;
+    @Inject
+    AnimationHelper animationHelper;
 
     private GagPagerAdapter gagPagerAdapter;
     private FaceDetector faceDetector;
     private MultiProcessor<Face> faceProcessor;
     private ZealotFaceFactory faceFactory;
     private CameraSource cameraSource;
+
+    private float ajaePower = .0f;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -82,6 +94,17 @@ public class TestAjaeActivity extends ZealotBaseActivity implements FaceListener
                 getGagImageURLsWithImageNames(result);
             }
         });
+
+        final int ajaeFullPower = getResources().getInteger(R.integer.ajae_full_power);
+        progress.setOnProgressChangedListener(new BaseRoundCornerProgressBar.OnProgressChangedListener() {
+            @Override
+            public void onProgressChanged(int viewId, float progress, boolean isPrimaryProgress, boolean isSecondaryProgress) {
+                if(progress == ajaeFullPower) {
+                    Animation scaleXYAnimation = animationHelper.loadAnimation(R.animator.scale_xy);
+                    animationHelper.startAnimation(ajaeIcon, scaleXYAnimation);
+                }
+            }
+        });
     }
 
     @Override
@@ -93,8 +116,8 @@ public class TestAjaeActivity extends ZealotBaseActivity implements FaceListener
             @Override
             public void run() {
                 if(smile > .30f) {
-                    String ajaePointString = ajaePoint.getText().toString();
-                    ajaePoint.setText(ajaePointString + "I");
+                    ajaePower += AJAE_POWER_UNIT;
+                    progress.setProgress(ajaePower);
                 }
             }
         });
