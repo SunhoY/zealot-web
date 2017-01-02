@@ -32,7 +32,7 @@
             app:rcRadius="10dp"
             app:rcBackgroundPadding="3dp"
             app:rcReverse="false"
-            app:rcProgressColor="@color/hot_pink"
+            app:rcProgressColor="@color/light_green"
             app:rcBackgroundColor="@color/gray" />
 
     </android.support.v7.widget.LinearLayoutCompat>

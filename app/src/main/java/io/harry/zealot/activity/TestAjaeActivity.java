@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.view.animation.Animation;
 import android.widget.ImageView;
@@ -44,7 +45,7 @@ public class TestAjaeActivity extends ZealotBaseActivity implements FaceListener
     @BindView(R.id.test_ajae_preview)
     TestAjaePreview testAjaePreview;
     @BindView(R.id.progress)
-    RoundCornerProgressBar progress;
+    RoundCornerProgressBar ajaePowerProgress;
     @BindView(R.id.ajae_icon)
     ImageView ajaeIcon;
 
@@ -96,13 +97,18 @@ public class TestAjaeActivity extends ZealotBaseActivity implements FaceListener
         });
 
         final int ajaeFullPower = getResources().getInteger(R.integer.ajae_full_power);
-        progress.setOnProgressChangedListener(new BaseRoundCornerProgressBar.OnProgressChangedListener() {
+        ajaePowerProgress.setOnProgressChangedListener(new BaseRoundCornerProgressBar.OnProgressChangedListener() {
             @Override
             public void onProgressChanged(int viewId, float progress, boolean isPrimaryProgress, boolean isSecondaryProgress) {
                 if(progress == ajaeFullPower) {
                     Animation scaleXYAnimation = animationHelper.loadAnimation(R.animator.scale_xy);
                     animationHelper.startAnimation(ajaeIcon, scaleXYAnimation);
+
+                    return;
                 }
+
+                int severityColorId = getAjaeSeverityLevel(progress);
+                ajaePowerProgress.setProgressColor(ContextCompat.getColor(TestAjaeActivity.this, severityColorId));
             }
         });
     }
@@ -117,7 +123,7 @@ public class TestAjaeActivity extends ZealotBaseActivity implements FaceListener
             public void run() {
                 if(smile > .30f) {
                     ajaePower += AJAE_POWER_UNIT;
-                    progress.setProgress(ajaePower);
+                    ajaePowerProgress.setProgress(ajaePower);
                 }
             }
         });
@@ -132,5 +138,17 @@ public class TestAjaeActivity extends ZealotBaseActivity implements FaceListener
                 gagPager.setAdapter(gagPagerAdapter);
             }
         });
+    }
+
+    private int getAjaeSeverityLevel(float ajaePower) {
+        if(ajaePower >= 500 && ajaePower < 700) {
+            return R.color.orange;
+        } else if(ajaePower >= 700 && ajaePower < 900) {
+            return R.color.hot_pink;
+        } else if(ajaePower >= 900 && ajaePower <= 1000) {
+            return R.color.red;
+        } else {
+            return R.color.light_green;
+        }
     }
 }

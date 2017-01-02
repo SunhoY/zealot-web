@@ -3,6 +3,7 @@ package io.harry.zealot.activity;
 import android.content.Context;
 import android.net.Uri;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.view.animation.Animation;
 import android.widget.ImageView;
@@ -207,6 +208,27 @@ public class TestAjaeActivityTest {
         progress.setProgress(999.f);
 
         verify(mockAnimationHelper, never()).startAnimation(any(ImageView.class), any(Animation.class));
+    }
+
+    @Test
+    public void onAjaePowerChanges_setProgressColorAsOrange_whenAjaeLevelExceedsCaution() throws Exception {
+        progress.setProgress(500.f);
+
+        assertThat(progress.getProgressColor()).isEqualTo(ContextCompat.getColor(application, R.color.orange));
+    }
+
+    @Test
+    public void onAjaePowerChanges_setProgressColorAsHotPink_whenAjaeLevelExceedsDanger() throws Exception {
+        progress.setProgress(700.f);
+
+        assertThat(progress.getProgressColor()).isEqualTo(ContextCompat.getColor(application, R.color.hot_pink));
+    }
+
+    @Test
+    public void onAjaePowerChanges_setProgressColorAsRed_whenAjaeLevelReachesRealAjae() throws Exception {
+        progress.setProgress(900.f);
+
+        assertThat(progress.getProgressColor()).isEqualTo(ContextCompat.getColor(application, R.color.red));
     }
 
     private void faceDetectsWithSmileyProbability(float smileyProbability) {
