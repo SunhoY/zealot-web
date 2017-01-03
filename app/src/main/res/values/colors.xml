@@ -2,8 +2,9 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#FFFFFF</color>
 
+    <color name="blue">#0066ff</color>
     <color name="red">#C70039</color>
     <color name="hot_pink">#FF0080</color>
     <color name="orange">#FFC300</color>
