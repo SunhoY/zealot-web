@@ -50,7 +50,7 @@ public class SplashActivity extends ZealotBaseActivity implements Animation.Anim
     @Override
     public void onAnimationEnd(Animation animation) {
         viewContainer.setVisibility(View.GONE);
-        startActivity(new Intent(this, TestAjaeActivity.class));
+        startActivity(new Intent(this, MenuActivity.class));
         finish();
     }
 

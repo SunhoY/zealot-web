@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.view.View;
 import android.view.animation.Animation;
 
+import org.assertj.android.api.content.IntentAssert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,6 +29,7 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.robolectric.RuntimeEnvironment.application;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
@@ -47,7 +49,7 @@ public class SplashActivityTest {
     @Before
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
-        ((TestZealotApplication)RuntimeEnvironment.application).getZealotComponent().inject(this);
+        ((TestZealotApplication) application).getZealotComponent().inject(this);
 
         subject = Robolectric.buildActivity(SplashActivity.class).create().visible().get();
         ButterKnife.bind(this, subject);
@@ -86,11 +88,11 @@ public class SplashActivityTest {
     }
 
     @Test
-    public void onAnimationEnd_launchesTestAjaeActivity() throws Exception {
+    public void onAnimationEnd_launchesMenuActivity() throws Exception {
         subject.onAnimationEnd(mock(Animation.class));
 
-        Intent expectedIntent = new Intent(subject, TestAjaeActivity.class);
-        assertThat(shadowOf(subject).getNextStartedActivity().getComponent()).isEqualTo(expectedIntent.getComponent());
+        IntentAssert intentAssert = new IntentAssert(shadowOf(subject).getNextStartedActivity());
+        intentAssert.hasComponent(application, MenuActivity.class);
     }
 
     @Test
