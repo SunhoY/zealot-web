@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">아재력 측정기</string>
+    <string name="ajae_power_test_with_line_change">아재력\n테스트</string>
+    <string name="you_are_already_laughing">넌 이미 웃고 있다 ㅋㅋ</string>
+    <string name="test_your_ajae_power">당신의 아재력을\n테스트하세요</string>
+    <string name="start">start</string>
+</resources>
