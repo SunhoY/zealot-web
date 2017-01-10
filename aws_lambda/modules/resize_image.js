@@ -20,7 +20,7 @@ function calculateSize(width, height) {
     return {width: newWidth, height: newHeight};
 }
 
-export default function resizeImage(format, imageFile, width, height) {
+function resizeImage(format, imageFile, width, height) {
     let newSize = calculateSize(width, height);
     let dstPath = "/temp/ajae";
 
@@ -45,3 +45,5 @@ export default function resizeImage(format, imageFile, width, height) {
         });
     });
 }
+
+export {resizeImage};

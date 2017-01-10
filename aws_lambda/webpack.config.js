@@ -1,11 +1,12 @@
-let path = require("path"),
-    fs = require("fs");
+var path = require('path'),
+    fs = require("fs"),
+    webpack = require("webpack");
 
 module.exports = {
     entry: fs.readdirSync(path.join(__dirname, "./lambdas"))
         .filter(fileName => /\.js$/.test(fileName))
         .map(fileName => {
-            let entry = {};
+            var entry = {};
             entry[fileName.replace(".js", "")] = path.join(
                 __dirname,
                 "./lambdas/",
@@ -21,6 +22,9 @@ module.exports = {
         libraryTarget: "commonjs2",
         filename: "[name].js"
     },
+    externals: {
+        "imagemagick": "imagemagick"
+    },
     target: "node",
     module: {
         loaders: [
@@ -31,7 +35,15 @@ module.exports = {
                 query: {
                     presets: ['es2015']
                 }
+            },
+            {
+                test: /\.json$/,
+                loader: 'json'
             }
         ]
-    }
+    },
+    plugins: [
+        new webpack.IgnorePlugin(/vertx/),
+        new webpack.optimize.UglifyJsPlugin()
+    ]
 };

@@ -1,6 +1,6 @@
 import imagemagick from 'imagemagick';
 import sinon from 'sinon';
-import resizeImage from "../../modules/resize_image";
+import {resizeImage} from "../../modules/resize_image";
 import {expect, assert} from "../testHelper";
 import fs from "fs";
 
