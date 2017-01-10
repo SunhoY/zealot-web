@@ -145,7 +145,7 @@ public class TestAjaeActivity extends ZealotBaseActivity implements FaceListener
 
     private void launchResultActivity(float ajaePower) {
         Intent intent = new Intent(this, ResultActivity.class);
-        intent.putExtra("ajaeScore", ajaePower / 10.f);
+        intent.putExtra("ajaeScore", (int)(ajaePower / 10.f));
         startActivity(intent);
     }
 

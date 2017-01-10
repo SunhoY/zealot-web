@@ -247,7 +247,7 @@ public class TestAjaeActivityTest {
 
         IntentAssert intentAssert = new IntentAssert(actual);
         intentAssert.hasComponent(application, ResultActivity.class);
-        intentAssert.hasExtra("ajaeScore", 100.0f);
+        intentAssert.hasExtra("ajaeScore", 100);
     }
 
     @Test
@@ -260,7 +260,7 @@ public class TestAjaeActivityTest {
 
         IntentAssert intentAssert = new IntentAssert(actual);
         intentAssert.hasComponent(application, ResultActivity.class);
-        intentAssert.hasExtra("ajaeScore", 69.9f);
+        intentAssert.hasExtra("ajaeScore", 69);
     }
 
     private void faceDetectsWithSmileyProbability(float smileyProbability) {
