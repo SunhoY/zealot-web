@@ -1,10 +1,10 @@
 package io.harry.zealot.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
 import android.view.animation.Animation;
 import android.widget.ImageView;
 
@@ -13,6 +13,7 @@ import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
 
+import org.assertj.android.api.content.IntentAssert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,6 +42,7 @@ import io.harry.zealot.helper.AnimationHelper;
 import io.harry.zealot.service.GagService;
 import io.harry.zealot.service.ServiceCallback;
 import io.harry.zealot.view.TestAjaePreview;
+import io.harry.zealot.viewpager.ZealotViewPager;
 import io.harry.zealot.vision.wrapper.ZealotCameraSourceWrapper;
 import io.harry.zealot.vision.wrapper.ZealotFaceDetectorWrapper;
 import io.harry.zealot.wrapper.GagPagerAdapterWrapper;
@@ -54,6 +56,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.robolectric.RuntimeEnvironment.application;
+import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class)
@@ -61,7 +64,7 @@ public class TestAjaeActivityTest {
     private TestAjaeActivity subject;
 
     @BindView(R.id.gag_pager)
-    ViewPager gagPager;
+    ZealotViewPager gagPager;
     @BindView(R.id.test_ajae_preview)
     TestAjaePreview testAjaePreview;
     @BindView(R.id.progress)
@@ -120,6 +123,11 @@ public class TestAjaeActivityTest {
         cameraSourceField.setAccessible(false);
 
         assertThat(cameraSource).isEqualTo(mockCameraSource);
+    }
+
+    @Test
+    public void onCreate_setsOnSwipeAttemptedOnLastPageListenerOnViewPager() throws Exception {
+        assertThat(gagPager.getOnSwipeListener()).isEqualTo(subject);
     }
 
     @Test
@@ -197,15 +205,15 @@ public class TestAjaeActivityTest {
     }
 
     @Test
-    public void onAjaePowerChanges_animatesAjaeIcon_whenAjaePowerIsFull() throws Exception {
-        progress.setProgress(1000.f);
+    public void onAjaePowerChanges_animatesAjaeIcon_whenAjaePowerIsGreaterAndEqualTo700() throws Exception {
+        progress.setProgress(700.f);
 
         verify(mockAnimationHelper).startAnimation(ajaeIcon, mockScaleXYAnimation);
     }
 
     @Test
-    public void onAjaePowerChanges_doesNotAnimateAjaeIcon_whenAjaePowerIsNotEnough() throws Exception {
-        progress.setProgress(999.f);
+    public void onAjaePowerChanges_doesNotAnimateAjaeIcon_whenAjaePowerIsLessThan700() throws Exception {
+        progress.setProgress(699.f);
 
         verify(mockAnimationHelper, never()).startAnimation(any(ImageView.class), any(Animation.class));
     }
@@ -229,6 +237,30 @@ public class TestAjaeActivityTest {
         progress.setProgress(900.f);
 
         assertThat(progress.getProgressColor()).isEqualTo(ContextCompat.getColor(application, R.color.red));
+    }
+
+    @Test
+    public void onAjaePowerChanges_launchesResultActivity_whenAjaePowerFullyCharged() throws Exception {
+        progress.setProgress(1000.f);
+
+        Intent actual = shadowOf(subject).getNextStartedActivity();
+
+        IntentAssert intentAssert = new IntentAssert(actual);
+        intentAssert.hasComponent(application, ResultActivity.class);
+        intentAssert.hasExtra("ajaeScore", 100.0f);
+    }
+
+    @Test
+    public void onSwipeAttemptedOnLastPage_launchesResultActivity() throws Exception {
+        progress.setProgress(699.f);
+
+        subject.onAttemptedOnLastPage();
+
+        Intent actual = shadowOf(subject).getNextStartedActivity();
+
+        IntentAssert intentAssert = new IntentAssert(actual);
+        intentAssert.hasComponent(application, ResultActivity.class);
+        intentAssert.hasExtra("ajaeScore", 69.9f);
     }
 
     private void faceDetectsWithSmileyProbability(float smileyProbability) {

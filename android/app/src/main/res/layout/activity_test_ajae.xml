@@ -37,12 +37,12 @@
 
     </android.support.v7.widget.LinearLayoutCompat>
 
-    <android.support.v4.view.ViewPager
+    <io.harry.zealot.viewpager.ZealotViewPager
         android:id="@+id/gag_pager"
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
 
-    </android.support.v4.view.ViewPager>
+    </io.harry.zealot.viewpager.ZealotViewPager>
 
     <io.harry.zealot.view.TestAjaePreview
         android:id="@+id/test_ajae_preview"

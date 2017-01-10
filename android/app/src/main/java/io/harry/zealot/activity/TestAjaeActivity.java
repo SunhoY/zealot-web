@@ -1,16 +1,16 @@
 package io.harry.zealot.activity;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
 import android.view.animation.Animation;
 import android.widget.ImageView;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
-import com.akexorcist.roundcornerprogressbar.common.BaseRoundCornerProgressBar;
+import com.akexorcist.roundcornerprogressbar.common.BaseRoundCornerProgressBar.OnProgressChangedListener;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.MultiProcessor;
 import com.google.android.gms.vision.face.Face;
@@ -29,6 +29,8 @@ import io.harry.zealot.listener.FaceListener;
 import io.harry.zealot.service.GagService;
 import io.harry.zealot.service.ServiceCallback;
 import io.harry.zealot.view.TestAjaePreview;
+import io.harry.zealot.viewpager.OnSwipeListener;
+import io.harry.zealot.viewpager.ZealotViewPager;
 import io.harry.zealot.vision.ZealotFaceFactory;
 import io.harry.zealot.vision.wrapper.ZealotCameraSourceWrapper;
 import io.harry.zealot.vision.wrapper.ZealotFaceDetectorWrapper;
@@ -36,12 +38,12 @@ import io.harry.zealot.vision.wrapper.ZealotFaceFactoryWrapper;
 import io.harry.zealot.vision.wrapper.ZealotMultiProcessorWrapper;
 import io.harry.zealot.wrapper.GagPagerAdapterWrapper;
 
-public class TestAjaeActivity extends ZealotBaseActivity implements FaceListener {
+public class TestAjaeActivity extends ZealotBaseActivity implements FaceListener, OnProgressChangedListener, OnSwipeListener {
 
     private final float AJAE_POWER_UNIT = 10.0f;
 
     @BindView(R.id.gag_pager)
-    ViewPager gagPager;
+    ZealotViewPager gagPager;
     @BindView(R.id.test_ajae_preview)
     TestAjaePreview testAjaePreview;
     @BindView(R.id.progress)
@@ -81,6 +83,8 @@ public class TestAjaeActivity extends ZealotBaseActivity implements FaceListener
         ButterKnife.bind(this);
         zealotComponent.inject(this);
 
+        gagPager.setOnSwipeListener(this);
+
         faceFactory = faceFactoryWrapper.getZealotFaceFactory(this);
         faceDetector = faceDetectorWrapper.getFaceDetector(this);
         cameraSource = cameraSourceWrapper.getCameraSource(this, faceDetector);
@@ -92,25 +96,18 @@ public class TestAjaeActivity extends ZealotBaseActivity implements FaceListener
         gagService.getGagImageFileNames(new ServiceCallback<List<String>>() {
             @Override
             public void onSuccess(List<String> result) {
-                getGagImageURLsWithImageNames(result);
+                getGagImageURLsWithImageNames(result, new ServiceCallback<List<Uri>>() {
+                    @Override
+                    public void onSuccess(List<Uri> result) {
+                        gagPagerAdapter = gagPagerAdapterWrapper.getGagPagerAdapter(
+                                getSupportFragmentManager(), result);
+                        gagPager.setAdapter(gagPagerAdapter);
+                    }
+                });
             }
         });
 
-        final int ajaeFullPower = getResources().getInteger(R.integer.ajae_full_power);
-        ajaePowerProgress.setOnProgressChangedListener(new BaseRoundCornerProgressBar.OnProgressChangedListener() {
-            @Override
-            public void onProgressChanged(int viewId, float progress, boolean isPrimaryProgress, boolean isSecondaryProgress) {
-                if(progress == ajaeFullPower) {
-                    Animation scaleXYAnimation = animationHelper.loadAnimation(R.animator.scale_xy);
-                    animationHelper.startAnimation(ajaeIcon, scaleXYAnimation);
-
-                    return;
-                }
-
-                int severityColorId = getAjaeSeverityLevel(progress);
-                ajaePowerProgress.setProgressColor(ContextCompat.getColor(TestAjaeActivity.this, severityColorId));
-            }
-        });
+        ajaePowerProgress.setOnProgressChangedListener(this);
     }
 
     @Override
@@ -129,15 +126,31 @@ public class TestAjaeActivity extends ZealotBaseActivity implements FaceListener
         });
     }
 
-    private void getGagImageURLsWithImageNames(List<String> result) {
-        gagService.getGagImageUris(result, new ServiceCallback<List<Uri>>() {
-            @Override
-            public void onSuccess(List<Uri> result) {
-                gagPagerAdapter = gagPagerAdapterWrapper.getGagPagerAdapter(
-                        getSupportFragmentManager(), result);
-                gagPager.setAdapter(gagPagerAdapter);
-            }
-        });
+    @Override
+    public void onProgressChanged(int viewId, float progress, boolean isPrimaryProgress, boolean isSecondaryProgress) {
+        final int ajaeFullPower = getResources().getInteger(R.integer.ajae_full_power);
+
+        if(progress >= 700.f) {
+            Animation scaleXYAnimation = animationHelper.loadAnimation(R.animator.scale_xy);
+            animationHelper.startAnimation(ajaeIcon, scaleXYAnimation);
+        }
+
+        int severityColorId = getAjaeSeverityLevel(progress);
+        ajaePowerProgress.setProgressColor(ContextCompat.getColor(TestAjaeActivity.this, severityColorId));
+
+        if(progress == ajaeFullPower) {
+            launchResultActivity(ajaeFullPower);
+        }
+    }
+
+    private void launchResultActivity(float ajaePower) {
+        Intent intent = new Intent(this, ResultActivity.class);
+        intent.putExtra("ajaeScore", ajaePower / 10.f);
+        startActivity(intent);
+    }
+
+    private void getGagImageURLsWithImageNames(List<String> urls, ServiceCallback<List<Uri>> serviceCallback) {
+        gagService.getGagImageUris(urls, serviceCallback);
     }
 
     private int getAjaeSeverityLevel(float ajaePower) {
@@ -150,5 +163,10 @@ public class TestAjaeActivity extends ZealotBaseActivity implements FaceListener
         } else {
             return R.color.light_green;
         }
+    }
+
+    @Override
+    public void onAttemptedOnLastPage() {
+        launchResultActivity(ajaePowerProgress.getProgress());
     }
 }
