@@ -61,11 +61,19 @@ public class ResultActivityTest {
     public void clickOnShare_sendShareIntentWithLink() throws Exception {
         share.performClick();
 
-        Intent actual = shadowOf(subject).getNextStartedActivity();
+        Intent chooser = shadowOf(subject).getNextStartedActivity();
 
-        IntentAssert intentAssert = new IntentAssert(actual);
+        IntentAssert chooserIntentAssert = new IntentAssert(chooser);
 
-        assertThat(intentAssert.hasAction(Intent.ACTION_SEND));
-        assertThat(intentAssert.hasExtra(Intent.EXTRA_TEXT, "http://placeholder.com?score=95"));
+        assertThat(chooserIntentAssert.hasAction(Intent.ACTION_CHOOSER));
+        assertThat(chooserIntentAssert.hasExtra(Intent.EXTRA_TITLE, "아재력 알리기"));
+
+        Intent originalIntent = chooser.getParcelableExtra(Intent.EXTRA_INTENT);
+
+        IntentAssert originalIntentAssert = new IntentAssert(originalIntent);
+
+        assertThat(originalIntentAssert.hasAction(Intent.ACTION_SEND));
+        assertThat(originalIntentAssert.hasExtra(Intent.EXTRA_TEXT, "http://placeholder.com?score=95"));
+        assertThat(originalIntentAssert.hasType("text/plain"));
     }
 }
