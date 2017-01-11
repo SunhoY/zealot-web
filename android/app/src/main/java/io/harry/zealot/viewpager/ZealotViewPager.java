@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 public class ZealotViewPager extends ViewPager {
     private OnSwipeListener onSwipeListener;
     boolean lastPagedReached = false;
+    boolean swipeListenerCalled = false;
 
     public ZealotViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -14,8 +15,9 @@ public class ZealotViewPager extends ViewPager {
 
     @Override
     protected void onPageScrolled(int position, float offset, int offsetPixels) {
-        if(lastPagedReached && offset == 0) {
+        if(lastPagedReached && offset == 0 && !swipeListenerCalled) {
             onSwipeListener.onAttemptedOnLastPage();
+            swipeListenerCalled = true;
         }
 
         lastPagedReached = position + 1 == getAdapter().getCount();

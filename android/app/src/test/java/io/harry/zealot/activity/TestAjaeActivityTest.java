@@ -263,6 +263,13 @@ public class TestAjaeActivityTest {
         intentAssert.hasExtra("ajaeScore", 69);
     }
 
+    @Test
+    public void launchingResultActivity_finishesActivity() throws Exception {
+        subject.onAttemptedOnLastPage();
+
+        assertThat(subject.isFinishing()).isTrue();
+    }
+
     private void faceDetectsWithSmileyProbability(float smileyProbability) {
         Face mockFace = mock(Face.class);
         when(mockFace.getIsSmilingProbability()).thenReturn(smileyProbability);

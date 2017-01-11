@@ -147,6 +147,8 @@ public class TestAjaeActivity extends ZealotBaseActivity implements FaceListener
         Intent intent = new Intent(this, ResultActivity.class);
         intent.putExtra("ajaeScore", (int)(ajaePower / 10.f));
         startActivity(intent);
+
+        finish();
     }
 
     private void getGagImageURLsWithImageNames(List<String> urls, ServiceCallback<List<Uri>> serviceCallback) {
