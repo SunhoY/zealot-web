@@ -7,4 +7,6 @@
     <string name="test_again">test again</string>
     <string name="share">share</string>
     <string name="share_ajae_power">아재력 알리기</string>
+    <string name="upload_complete">업로드 완료</string>
+    <string name="share_ajae_gag">아재개그 퍼뜨리기</string>
 </resources>

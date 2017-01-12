@@ -1,6 +1,7 @@
 package io.harry.zealot.service;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -74,5 +75,9 @@ public class GagService {
                 }
             });
         }
+    }
+
+    public void uploadGag(Bitmap bitmap, ServiceCallback serviceCallback) {
+        serviceCallback.onSuccess(null);
     }
 }
