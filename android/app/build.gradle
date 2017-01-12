@@ -59,6 +59,8 @@ dependencies {
 
     compile 'com.akexorcist:RoundCornerProgressBar:2.0.3'
 
+    compile 'joda-time:joda-time:2.9.7'
+
     apt "com.google.dagger:dagger-compiler:${daggerVersion}"
 
     apt "com.jakewharton:butterknife-compiler:${butterKnifeVersion}"

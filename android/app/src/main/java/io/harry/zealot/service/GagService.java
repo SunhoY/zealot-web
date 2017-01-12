@@ -5,13 +5,18 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.common.collect.ImmutableMultimap;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import org.joda.time.DateTime;
+
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,7 +82,28 @@ public class GagService {
         }
     }
 
-    public void uploadGag(Bitmap bitmap, ServiceCallback serviceCallback) {
-        serviceCallback.onSuccess(null);
+    public void uploadGag(Bitmap bitmap, final ServiceCallback<Void> serviceCallback) {
+        final String fileName = String.valueOf(new DateTime().getMillis()) + ".jpg";
+
+        StorageReference gagsReference = firebaseHelper.getStorageReference("gags");
+        StorageReference imageReference = gagsReference.child(fileName);
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+
+        UploadTask uploadTask = imageReference.putBytes(byteArrayOutputStream.toByteArray());
+        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                DatabaseReference gagsRef = firebaseHelper.getDatabaseReference("gags");
+                DatabaseReference newlyCreatedChild = gagsRef.push();
+
+                ImmutableMultimap value = ImmutableMultimap.of("fileName", fileName);
+
+                newlyCreatedChild.setValue(value);
+
+                serviceCallback.onSuccess(null);
+            }
+        });
     }
 }
