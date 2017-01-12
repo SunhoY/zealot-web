@@ -2,6 +2,7 @@ package io.harry.zealot.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.animation.Animation;
@@ -39,7 +40,13 @@ public class SplashActivity extends ZealotBaseActivity implements Animation.Anim
         fadeOutAnimation = animationHelper.loadAnimation(R.animator.fade_out);
         fadeOutAnimation.setAnimationListener(this);
 
-        animationHelper.startAnimation(viewContainer, fadeOutAnimation);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                animationHelper.startAnimation(viewContainer, fadeOutAnimation);
+            }
+        }, 2000);
+
     }
 
     @Override

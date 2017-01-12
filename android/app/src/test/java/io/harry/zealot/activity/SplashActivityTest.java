@@ -1,6 +1,5 @@
 package io.harry.zealot.activity;
 
-import android.content.Intent;
 import android.view.View;
 import android.view.animation.Animation;
 
@@ -12,7 +11,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import javax.inject.Inject;
@@ -27,6 +25,8 @@ import io.harry.zealot.helper.AnimationHelper;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.robolectric.RuntimeEnvironment.application;
@@ -74,10 +74,14 @@ public class SplashActivityTest {
     }
 
     @Test
-    public void onResume_startsAnimationOnViewContainer() throws Exception {
+    public void onResume_startsAnimation_after2Seconds_onViewContainer() throws Exception {
         subject.onResume();
 
-        verify(mockAnimationHelper).startAnimation(viewContainer, mockAnimation);
+        verify(mockAnimationHelper, never()).startAnimation(viewContainer, mockAnimation);
+
+        Robolectric.getForegroundThreadScheduler().advanceBy(2001);
+
+        verify(mockAnimationHelper, times(1)).startAnimation(viewContainer, mockAnimation);
     }
 
     @Test
