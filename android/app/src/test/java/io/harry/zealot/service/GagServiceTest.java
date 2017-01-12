@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.ImmutableMap;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
@@ -297,7 +297,7 @@ public class GagServiceTest {
 
         onSuccessListenerUploadCaptor.getValue().onSuccess(mock(UploadTask.TaskSnapshot.class));
 
-        verify(mockChildReference).setValue(ImmutableMultimap.of("fileName", "1497873600000.jpg"));
+        verify(mockChildReference).setValue(ImmutableMap.of("fileName", "1497873600000.jpg"));
     }
 
     @Test

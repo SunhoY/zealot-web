@@ -1,5 +1,6 @@
 package io.harry.zealot.module;
 
+import android.content.ContentResolver;
 import android.content.Context;
 
 import javax.inject.Singleton;
@@ -17,7 +18,12 @@ public class ContextModule {
     }
 
     @Provides
-    public Context provideContext() {
+    Context provideContext() {
         return context;
+    }
+
+    @Provides
+    ContentResolver provideContentResolver(Context context) {
+        return context.getContentResolver();
     }
 }

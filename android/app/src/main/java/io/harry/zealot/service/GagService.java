@@ -5,7 +5,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.ImmutableMap;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -98,7 +98,7 @@ public class GagService {
                 DatabaseReference gagsRef = firebaseHelper.getDatabaseReference("gags");
                 DatabaseReference newlyCreatedChild = gagsRef.push();
 
-                ImmutableMultimap value = ImmutableMultimap.of("fileName", fileName);
+                ImmutableMap value = ImmutableMap.of("fileName", fileName);
 
                 newlyCreatedChild.setValue(value);
 
