@@ -3,9 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingPrefix"
     android:orientation="vertical"
     android:background="@color/blue"
-    tools:ignore="MissingPrefix"
     android:gravity="center"
     android:id="@+id/view_container"
     >

@@ -47,6 +47,7 @@ import io.harry.zealot.vision.wrapper.ZealotCameraSourceWrapper;
 import io.harry.zealot.vision.wrapper.ZealotFaceDetectorWrapper;
 import io.harry.zealot.wrapper.GagPagerAdapterWrapper;
 
+import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
@@ -261,6 +262,7 @@ public class TestAjaeActivityTest {
         IntentAssert intentAssert = new IntentAssert(actual);
         intentAssert.hasComponent(application, ResultActivity.class);
         intentAssert.hasExtra("ajaeScore", 69);
+        intentAssert.hasFlags(FLAG_ACTIVITY_SINGLE_TOP);
     }
 
     @Test

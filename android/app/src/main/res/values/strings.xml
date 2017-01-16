@@ -3,10 +3,15 @@
     <string name="ajae_power_test_with_line_change">아재력\n테스트</string>
     <string name="you_are_already_laughing">넌 이미 웃고 있다 ㅋㅋ</string>
     <string name="test_your_ajae_power">당신의 아재력을\n테스트하세요</string>
-    <string name="start">start</string>
-    <string name="test_again">test again</string>
-    <string name="share">share</string>
+    <string name="start">시작하기</string>
+    <string name="test_again">다시하기</string>
+    <string name="share">공유하기</string>
     <string name="share_ajae_power">아재력 알리기</string>
     <string name="upload_complete">업로드 완료</string>
     <string name="share_ajae_gag">아재개그 퍼뜨리기</string>
+    <string name="score">%1$d 점</string>
+    <string name="not_ajae_message">자라나는\n어린새싹</string>
+    <string name="medium_ajae_message">아직까진\n젊은오빠</string>
+    <string name="real_ajae_message">빼박캔트\n진성아재</string>
+    <string name="result_with_exclamation">결과!</string>
 </resources>

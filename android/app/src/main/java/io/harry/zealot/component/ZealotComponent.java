@@ -4,9 +4,11 @@ import javax.inject.Singleton;
 
 import dagger.Component;
 import io.harry.zealot.activity.MenuActivity;
+import io.harry.zealot.activity.ResultActivity;
 import io.harry.zealot.activity.SplashActivity;
 import io.harry.zealot.activity.TestAjaeActivity;
 import io.harry.zealot.fragment.GagFragment;
+import io.harry.zealot.module.AjaeScoreModule;
 import io.harry.zealot.module.AnimationModule;
 import io.harry.zealot.module.ContentModule;
 import io.harry.zealot.module.ContextModule;
@@ -25,6 +27,7 @@ import io.harry.zealot.service.GagService;
         PicassoModule.class,
         GoogleFaceApiModule.class,
         ContentModule.class,
+        AjaeScoreModule.class,
 })
 public interface ZealotComponent {
     void inject(SplashActivity splashActivity);
@@ -32,4 +35,5 @@ public interface ZealotComponent {
     void inject(GagService gagService);
     void inject(GagFragment gagFragment);
     void inject(MenuActivity menuActivity);
+    void inject(ResultActivity resultActivity);
 }

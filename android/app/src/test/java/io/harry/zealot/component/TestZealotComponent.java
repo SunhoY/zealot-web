@@ -5,12 +5,15 @@ import javax.inject.Singleton;
 import dagger.Component;
 import io.harry.zealot.activity.MenuActivity;
 import io.harry.zealot.activity.MenuActivityTest;
+import io.harry.zealot.activity.ResultActivity;
+import io.harry.zealot.activity.ResultActivityTest;
 import io.harry.zealot.activity.SplashActivity;
 import io.harry.zealot.activity.SplashActivityTest;
 import io.harry.zealot.activity.TestAjaeActivity;
 import io.harry.zealot.activity.TestAjaeActivityTest;
 import io.harry.zealot.fragment.GagFragment;
 import io.harry.zealot.fragment.GagFragmentTest;
+import io.harry.zealot.module.TestAjaeScoreModule;
 import io.harry.zealot.module.TestAnimationModule;
 import io.harry.zealot.module.TestContentModule;
 import io.harry.zealot.module.TestFirebaseModule;
@@ -28,6 +31,7 @@ import io.harry.zealot.service.GagServiceTest;
         TestPicassoModule.class,
         TestGoogleFaceApiModule.class,
         TestContentModule.class,
+        TestAjaeScoreModule.class,
 })
 public interface TestZealotComponent extends ZealotComponent {
     void inject(SplashActivity splashActivity);
@@ -40,4 +44,6 @@ public interface TestZealotComponent extends ZealotComponent {
     void inject(GagFragmentTest gagFragmentTest);
     void inject(MenuActivity menuActivity);
     void inject(MenuActivityTest menuActivityTest);
+    void inject(ResultActivity resultActivity);
+    void inject(ResultActivityTest resultActivityTest);
 }

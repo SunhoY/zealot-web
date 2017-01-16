@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="AjaeState">
+        <!-- name of the attribute that will be used in XML files -->
+        <attr name="state_ajae_full" format="boolean"/>
+        <attr name="state_ajae_medium" format="boolean"/>
+        <attr name="state_ajae_not" format="boolean"/>
+    </declare-styleable>
+</resources>
