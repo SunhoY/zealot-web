@@ -6,8 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.view.animation.Animation;
-import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.akexorcist.roundcornerprogressbar.common.BaseRoundCornerProgressBar.OnProgressChangedListener;
@@ -48,8 +47,8 @@ public class TestAjaeActivity extends ZealotBaseActivity implements FaceListener
     TestAjaePreview testAjaePreview;
     @BindView(R.id.progress)
     RoundCornerProgressBar ajaePowerProgress;
-    @BindView(R.id.ajae_icon)
-    ImageView ajaeIcon;
+    @BindView(R.id.ajae_power_percentage)
+    TextView ajaePowerPercentage;
 
     @Inject
     GagPagerAdapterWrapper gagPagerAdapterWrapper;
@@ -130,13 +129,9 @@ public class TestAjaeActivity extends ZealotBaseActivity implements FaceListener
     public void onProgressChanged(int viewId, float progress, boolean isPrimaryProgress, boolean isSecondaryProgress) {
         final int ajaeFullPower = getResources().getInteger(R.integer.ajae_full_power);
 
-        if(progress >= 700.f) {
-            Animation scaleXYAnimation = animationHelper.loadAnimation(R.animator.scale_xy);
-            animationHelper.startAnimation(ajaeIcon, scaleXYAnimation);
-        }
-
         int severityColorId = getAjaeSeverityLevel(progress);
         ajaePowerProgress.setProgressColor(ContextCompat.getColor(TestAjaeActivity.this, severityColorId));
+        ajaePowerPercentage.setText(getString(R.string.x_percentage, (int)(progress / 10)));
 
         if(progress == ajaeFullPower) {
             launchResultActivity(ajaeFullPower);

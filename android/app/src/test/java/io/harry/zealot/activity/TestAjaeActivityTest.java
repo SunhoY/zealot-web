@@ -6,7 +6,7 @@ import android.net.Uri;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.view.animation.Animation;
-import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.google.android.gms.vision.CameraSource;
@@ -53,7 +53,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.robolectric.RuntimeEnvironment.application;
@@ -70,8 +69,8 @@ public class TestAjaeActivityTest {
     TestAjaePreview testAjaePreview;
     @BindView(R.id.progress)
     RoundCornerProgressBar progress;
-    @BindView(R.id.ajae_icon)
-    ImageView ajaeIcon;
+    @BindView(R.id.ajae_power_percentage)
+    TextView ajaePowerPercentage;
 
     @Inject
     GagPagerAdapterWrapper mockGagPagerAdapterWrapper;
@@ -206,42 +205,39 @@ public class TestAjaeActivityTest {
     }
 
     @Test
-    public void onAjaePowerChanges_animatesAjaeIcon_whenAjaePowerIsGreaterAndEqualTo700() throws Exception {
-        progress.setProgress(700.f);
+    public void onAjaePowerChanged_changesAjaePowerPercentage() throws Exception {
+        progress.setProgress(500.0f);
 
-        verify(mockAnimationHelper).startAnimation(ajaeIcon, mockScaleXYAnimation);
+        assertThat(ajaePowerPercentage.getText()).isEqualTo("50 %");
+
+        progress.setProgress(600.0f);
+
+        assertThat(ajaePowerPercentage.getText()).isEqualTo("60 %");
     }
 
     @Test
-    public void onAjaePowerChanges_doesNotAnimateAjaeIcon_whenAjaePowerIsLessThan700() throws Exception {
-        progress.setProgress(699.f);
-
-        verify(mockAnimationHelper, never()).startAnimation(any(ImageView.class), any(Animation.class));
-    }
-
-    @Test
-    public void onAjaePowerChanges_setProgressColorAsOrange_whenAjaeLevelExceedsCaution() throws Exception {
+    public void onAjaePowerChanged_setProgressColorAsOrange_whenAjaeLevelExceedsCaution() throws Exception {
         progress.setProgress(500.f);
 
         assertThat(progress.getProgressColor()).isEqualTo(ContextCompat.getColor(application, R.color.orange));
     }
 
     @Test
-    public void onAjaePowerChanges_setProgressColorAsHotPink_whenAjaeLevelExceedsDanger() throws Exception {
+    public void onAjaePowerChanged_setProgressColorAsHotPink_whenAjaeLevelExceedsDanger() throws Exception {
         progress.setProgress(700.f);
 
         assertThat(progress.getProgressColor()).isEqualTo(ContextCompat.getColor(application, R.color.hot_pink));
     }
 
     @Test
-    public void onAjaePowerChanges_setProgressColorAsRed_whenAjaeLevelReachesRealAjae() throws Exception {
+    public void onAjaePowerChanged_setProgressColorAsRed_whenAjaeLevelReachesRealAjae() throws Exception {
         progress.setProgress(900.f);
 
         assertThat(progress.getProgressColor()).isEqualTo(ContextCompat.getColor(application, R.color.red));
     }
 
     @Test
-    public void onAjaePowerChanges_launchesResultActivity_whenAjaePowerFullyCharged() throws Exception {
+    public void onAjaePowerChanged_launchesResultActivity_whenAjaePowerFullyCharged() throws Exception {
         progress.setProgress(1000.f);
 
         Intent actual = shadowOf(subject).getNextStartedActivity();

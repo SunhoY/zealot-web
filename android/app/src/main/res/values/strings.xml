@@ -14,4 +14,6 @@
     <string name="medium_ajae_message">아직까진\n젊은오빠</string>
     <string name="real_ajae_message">빼박캔트\n진성아재</string>
     <string name="result_with_exclamation">결과!</string>
+    <string name="x_percentage" formatted="false">%1$d %%</string>
+    <string name="your_ajae_power">당신의 아재력</string>
 </resources>
