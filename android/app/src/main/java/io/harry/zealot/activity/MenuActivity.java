@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
 
 import javax.inject.Inject;
@@ -18,6 +17,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.harry.zealot.R;
 import io.harry.zealot.helper.BitmapHelper;
+import io.harry.zealot.helper.PermissionHelper;
 import io.harry.zealot.service.GagService;
 import io.harry.zealot.service.ServiceCallback;
 
@@ -31,6 +31,8 @@ public class MenuActivity extends ZealotBaseActivity {
     BitmapHelper bitmapHelper;
     @Inject
     GagService gagService;
+    @Inject
+    PermissionHelper permissionHelper;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,7 +46,8 @@ public class MenuActivity extends ZealotBaseActivity {
 
     @OnClick(R.id.start_button)
     public void onStartClick() {
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+        if(!permissionHelper.hasPermission(Manifest.permission.CAMERA)) {
+            //todo: figure out how to test this
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},
                     REQUEST_FOR_CAMERA);
         }else {
@@ -54,10 +57,8 @@ public class MenuActivity extends ZealotBaseActivity {
 
     @OnClick(R.id.upload_button)
     public void onUploadClick() {
-        //todo: not tested
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-
+        if (!permissionHelper.hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            //todo: figure out how to test this
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                     REQUEST_FOR_READ_EXTERNAL_STORAGE);
         }

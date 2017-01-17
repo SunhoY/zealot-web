@@ -7,6 +7,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import io.harry.zealot.helper.PermissionHelper;
 
 @Module
 @Singleton
@@ -25,5 +26,10 @@ public class ContextModule {
     @Provides
     ContentResolver provideContentResolver(Context context) {
         return context.getContentResolver();
+    }
+
+    @Provides @Singleton
+    PermissionHelper providePermissionHelper(Context context) {
+        return new PermissionHelper(context);
     }
 }

@@ -1,7 +1,9 @@
 package io.harry.zealot.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -26,6 +28,7 @@ import javax.inject.Inject;
 import io.harry.zealot.BuildConfig;
 import io.harry.zealot.TestZealotApplication;
 import io.harry.zealot.helper.BitmapHelper;
+import io.harry.zealot.helper.PermissionHelper;
 import io.harry.zealot.service.GagService;
 import io.harry.zealot.service.ServiceCallback;
 
@@ -45,6 +48,8 @@ import static org.robolectric.Shadows.shadowOf;
 public class MenuActivityTest {
     private static final int PICK_PHOTO = 9;
     private static final int INT_DOESNT_MATTER = 0;
+    private static final int REQUEST_FOR_READ_EXTERNAL_STORAGE = 0;
+    private static final int REQUEST_FOR_CAMERA = 1;
     private MenuActivity subject;
 
     @Mock
@@ -54,6 +59,8 @@ public class MenuActivityTest {
     BitmapHelper bitmapHelper;
     @Inject
     GagService mockGagService;
+    @Inject
+    PermissionHelper mockPermissionHelper;
 
     @Captor
     ArgumentCaptor<ServiceCallback> serviceCallbackCaptor;
@@ -67,19 +74,52 @@ public class MenuActivityTest {
     }
 
     @Test
-    public void onStartClick_startsTestAjaeActivity() throws Exception {
+    public void onStartClick_asksCameraPermission_whenPermissionIsNotGranted() throws Exception {
+        //todo: figure out how to test asking permission
+        when(mockPermissionHelper.hasPermission(Manifest.permission.CAMERA))
+                .thenReturn(false);
+
         subject.onStartClick();
 
-        IntentAssert intentAssert = new IntentAssert(shadowOf(subject).getNextStartedActivity());
-        intentAssert.hasComponent(application, TestAjaeActivity.class);
+        IntentAssert intentAssert = new IntentAssert(shadowOf(application).getNextStartedActivity());
+        intentAssert.isNull();
     }
 
     @Test
-    public void onUploadAjae_launchesGalleryAppToPickPhoto() throws Exception {
+    public void onStartClick_launchesTestAjaeActivity_whenPermissionIsGranted() throws Exception {
+        when(mockPermissionHelper.hasPermission(Manifest.permission.CAMERA))
+                .thenReturn(true);
+
+        subject.onStartClick();
+
+        IntentAssert intentAssert = new IntentAssert(shadowOf(application).getNextStartedActivity());
+        intentAssert.hasComponent(subject, TestAjaeActivity.class);
+    }
+
+    @Test
+    public void onUploadAjae_asksForStoragePermission_whenPermissionIsNotGranted() throws Exception {
+        when(mockPermissionHelper.hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE))
+            .thenReturn(false);
+
         subject.onUploadClick();
 
         ShadowActivity.IntentForResult actual = shadowOf(subject).getNextStartedActivityForResult();
 
+        assertThat(actual).isNull();
+    }
+
+    @Test
+    public void onUploadAjae_launchesGalleryAppToPickPhoto() throws Exception {
+        when(mockPermissionHelper.hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE))
+                .thenReturn(true);
+
+        subject.onUploadClick();
+
+        assertPhotoPickActivityIsLaunched();
+    }
+
+    private void assertPhotoPickActivityIsLaunched() {
+        ShadowActivity.IntentForResult actual = shadowOf(subject).getNextStartedActivityForResult();
         assertThat(actual.requestCode).isEqualTo(PICK_PHOTO);
 
         IntentAssert intentAssert = new IntentAssert(actual.intent);
@@ -93,6 +133,47 @@ public class MenuActivityTest {
         subject.onActivityResult(PICK_PHOTO, Activity.RESULT_CANCELED, null);
 
         verify(bitmapHelper, never()).getBitmapByURI(any(Uri.class));
+    }
+
+    @Test
+    public void onRequestPermissionCameraResult_startsTestAjaeActivity_whenPermissionGranted() throws Exception {
+        subject.onRequestPermissionsResult(REQUEST_FOR_CAMERA, null,
+                new int[]{PackageManager.PERMISSION_GRANTED});
+
+        IntentAssert intentAssert = new IntentAssert(shadowOf(application).getNextStartedActivity());
+        intentAssert.hasComponent(subject, TestAjaeActivity.class);
+    }
+
+    @Test
+    public void onRequestPermissionCameraResult_toastsMessage_whenPermissionIsNotGranted() throws Exception {
+        subject.onRequestPermissionsResult(REQUEST_FOR_CAMERA, null,
+                new int[]{PackageManager.PERMISSION_DENIED});
+
+        IntentAssert intentAssert = new IntentAssert(shadowOf(application).getNextStartedActivity());
+        intentAssert.isNull();
+
+        assertThat(ShadowToast.getTextOfLatestToast())
+                .isEqualTo("카메라 권한이 없으면 아재력을 측정할 수 없어요 ㅠㅠ");
+    }
+
+    @Test
+    public void onRequestPermissionStorageResult_startsPhotoPickActivity_whenPermissionGranted() throws Exception {
+        subject.onRequestPermissionsResult(REQUEST_FOR_READ_EXTERNAL_STORAGE, null,
+                new int[]{PackageManager.PERMISSION_GRANTED});
+
+        assertPhotoPickActivityIsLaunched();
+    }
+
+    @Test
+    public void onRequestPermissionStorageResult_toastsMessage_whenPermissionIsNotGranted() throws Exception {
+        subject.onRequestPermissionsResult(REQUEST_FOR_READ_EXTERNAL_STORAGE, null,
+                new int[]{PackageManager.PERMISSION_DENIED});
+
+        ShadowActivity.IntentForResult actual = shadowOf(subject).getNextStartedActivityForResult();
+        assertThat(actual).isNull();
+
+        assertThat(ShadowToast.getTextOfLatestToast())
+                .isEqualTo("권한을 부여하지 않으면 아재력을 퍼뜨릴 수 없어요 ㅠㅠ");
     }
 
     private void assumePhotoHasBeenPicked(Uri uri, Bitmap bitmapToBeReturned, int bitmapWidth, int bitmapHeight) {

@@ -16,6 +16,7 @@ import io.harry.zealot.fragment.GagFragmentTest;
 import io.harry.zealot.module.TestAjaeScoreModule;
 import io.harry.zealot.module.TestAnimationModule;
 import io.harry.zealot.module.TestContentModule;
+import io.harry.zealot.module.TestContextModule;
 import io.harry.zealot.module.TestFirebaseModule;
 import io.harry.zealot.module.TestGagTestModule;
 import io.harry.zealot.module.TestGoogleFaceApiModule;
@@ -25,6 +26,7 @@ import io.harry.zealot.service.GagServiceTest;
 
 @Singleton
 @Component(modules = {
+        TestContextModule.class,
         TestAnimationModule.class,
         TestGagTestModule.class,
         TestFirebaseModule.class,
