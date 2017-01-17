@@ -1,11 +1,15 @@
 package io.harry.zealot.activity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
 
 import javax.inject.Inject;
@@ -20,6 +24,8 @@ import io.harry.zealot.service.ServiceCallback;
 public class MenuActivity extends ZealotBaseActivity {
     public static final int PICK_PHOTO = 9;
     public static final int MAX_WIDTH = 720;
+    private static final int REQUEST_FOR_READ_EXTERNAL_STORAGE = 0;
+    private static final int REQUEST_FOR_CAMERA = 1;
 
     @Inject
     BitmapHelper bitmapHelper;
@@ -38,12 +44,50 @@ public class MenuActivity extends ZealotBaseActivity {
 
     @OnClick(R.id.start_button)
     public void onStartClick() {
-        startActivity(new Intent(this, TestAjaeActivity.class));
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},
+                    REQUEST_FOR_CAMERA);
+        }else {
+            startActivity(new Intent(this, TestAjaeActivity.class));
+        }
     }
 
     @OnClick(R.id.upload_button)
     public void onUploadClick() {
-        startActivityForResult(new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI), PICK_PHOTO);
+        //todo: not tested
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    REQUEST_FOR_READ_EXTERNAL_STORAGE);
+        }
+        else {
+            startActivityForResult(new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI), PICK_PHOTO);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        //todo: not tested
+        switch (requestCode) {
+            case REQUEST_FOR_READ_EXTERNAL_STORAGE: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startActivityForResult(new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI), PICK_PHOTO);
+                } else {
+                    Toast.makeText(this, R.string.storage_permission_needed, Toast.LENGTH_LONG).show();
+                }
+
+                return;
+            }
+
+            case REQUEST_FOR_CAMERA: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startActivity(new Intent(this, TestAjaeActivity.class));
+                } else {
+                    Toast.makeText(this, R.string.camera_permission_needed, Toast.LENGTH_LONG).show();
+                }
+            }
+        }
     }
 
     @Override
