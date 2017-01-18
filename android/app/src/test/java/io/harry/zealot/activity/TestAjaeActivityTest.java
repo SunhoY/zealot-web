@@ -61,7 +61,11 @@ import static org.robolectric.Shadows.shadowOf;
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class)
 public class TestAjaeActivityTest {
+    private static final int GAG_PAGE_COUNT = 4;
+
     private TestAjaeActivity subject;
+    private Animation mockScaleXYAnimation;
+    private FaceDetector testFaceDetector;
 
     @BindView(R.id.gag_pager)
     ZealotViewPager gagPager;
@@ -71,6 +75,12 @@ public class TestAjaeActivityTest {
     RoundCornerProgressBar progress;
     @BindView(R.id.ajae_power_percentage)
     TextView ajaePowerPercentage;
+    @BindView(R.id.previous_gag)
+    TextView previousGag;
+    @BindView(R.id.next_gag)
+    TextView nextGag;
+    @BindView(R.id.current_gag)
+    TextView currentGag;
 
     @Inject
     GagPagerAdapterWrapper mockGagPagerAdapterWrapper;
@@ -84,16 +94,14 @@ public class TestAjaeActivityTest {
     AnimationHelper mockAnimationHelper;
 
     @Mock
-    private GagPagerAdapter mockGagPagerAdapter;
+    GagPagerAdapter mockGagPagerAdapter;
     @Mock
-    private com.google.android.gms.vision.CameraSource mockCameraSource;
-    private FaceDetector testFaceDetector;
+    com.google.android.gms.vision.CameraSource mockCameraSource;
 
     @Captor
     ArgumentCaptor<ServiceCallback<List<String>>> stringListServiceCallbackCaptor;
     @Captor
     ArgumentCaptor<ServiceCallback<List<Uri>>> uriListServiceCallbackCaptor;
-    private Animation mockScaleXYAnimation;
 
 
     @Before
@@ -106,11 +114,13 @@ public class TestAjaeActivityTest {
 
         when(mockGagPagerAdapterWrapper.getGagPagerAdapter(any(FragmentManager.class), anyListOf(Uri.class)))
             .thenReturn(mockGagPagerAdapter);
+        when(mockGagPagerAdapter.getCount()).thenReturn(GAG_PAGE_COUNT);
         when(mockFaceDetectorWrapper.getFaceDetector(any(Context.class))).thenReturn(testFaceDetector);
         when(mockCameraSourceWrapper.getCameraSource(any(Context.class), eq(testFaceDetector))).thenReturn(mockCameraSource);
         when(mockAnimationHelper.loadAnimation(R.animator.scale_xy)).thenReturn(mockScaleXYAnimation);
 
         subject = Robolectric.buildActivity(TestAjaeActivity.class).create().get();
+        subject.gagPager.setAdapter(mockGagPagerAdapter);
 
         ButterKnife.bind(this, subject);
     }
@@ -253,12 +263,7 @@ public class TestAjaeActivityTest {
 
         subject.onAttemptedOnLastPage();
 
-        Intent actual = shadowOf(subject).getNextStartedActivity();
-
-        IntentAssert intentAssert = new IntentAssert(actual);
-        intentAssert.hasComponent(application, ResultActivity.class);
-        intentAssert.hasExtra("ajaeScore", 69);
-        intentAssert.hasFlags(FLAG_ACTIVITY_SINGLE_TOP);
+        assertResultActivityIsLaunched(69);
     }
 
     @Test
@@ -266,6 +271,109 @@ public class TestAjaeActivityTest {
         subject.onAttemptedOnLastPage();
 
         assertThat(subject.isFinishing()).isTrue();
+    }
+
+    @Test
+    public void showsToHome_onLeftTopText_whenPageIsFirstPage() throws Exception {
+        subject.onPageSelected(0);
+
+        assertThat(previousGag.getText()).isEqualTo("집으로");
+    }
+
+    @Test
+    public void showsPrevious_onLeftTopText_whenPageIsNotFirstPage() throws Exception {
+        subject.onPageSelected(1);
+
+        assertThat(previousGag.getText()).isEqualTo("이전");
+
+        subject.onPageSelected(2);
+
+        assertThat(previousGag.getText()).isEqualTo("이전");
+    }
+
+    @Test
+    public void showsToNext_onRightTopText_whenPageIsNotLastPage() throws Exception {
+        subject.onPageSelected(GAG_PAGE_COUNT - 3);
+
+        assertThat(nextGag.getText()).isEqualTo("다음");
+
+        subject.onPageSelected(GAG_PAGE_COUNT - 2);
+
+        assertThat(nextGag.getText()).isEqualTo("다음");
+    }
+
+    @Test
+    public void showsToResult_onRightTopText_whenPageIsLastPage() throws Exception {
+        subject.onPageSelected(GAG_PAGE_COUNT - 1);
+
+        assertThat(nextGag.getText()).isEqualTo("결과");
+    }
+
+    @Test
+    public void showsOrdinalNumber_onCenterTopText_accordingToPageNumber() throws Exception {
+        subject.onPageSelected(0);
+
+        assertThat(currentGag.getText()).isEqualTo("첫번째");
+
+        subject.onPageSelected(3);
+
+        assertThat(currentGag.getText()).isEqualTo("네번째");
+    }
+
+    @Test
+    public void clickOnPrevious_finishes_whenPageIsFirstPage() throws Exception {
+        gagPager.setCurrentItem(0);
+
+        previousGag.performClick();
+
+        assertThat(subject.isFinishing()).isTrue();
+    }
+
+    @Test
+    public void clickOnPrevious_showsPreviousPage_whenPageIsNotFirstPage() throws Exception {
+        gagPager.setCurrentItem(2);
+
+        previousGag.performClick();
+
+        assertThat(gagPager.getCurrentItem()).isEqualTo(1);
+    }
+
+    @Test
+    public void clickOnNext_finishes_whenPageIsLastPage() throws Exception {
+        gagPager.setCurrentItem(GAG_PAGE_COUNT - 1);
+
+        nextGag.performClick();
+
+        assertThat(subject.isFinishing()).isTrue();
+    }
+
+    @Test
+    public void clickOnText_launchesResultActivity() throws Exception {
+        gagPager.setCurrentItem(GAG_PAGE_COUNT - 1);
+
+        progress.setProgress(800.f);
+
+        nextGag.performClick();
+
+        assertResultActivityIsLaunched(80);
+    }
+
+    private void assertResultActivityIsLaunched(int expectedScore) {
+        Intent actual = shadowOf(subject).getNextStartedActivity();
+
+        IntentAssert intentAssert = new IntentAssert(actual);
+        intentAssert.hasComponent(application, ResultActivity.class);
+        intentAssert.hasExtra("ajaeScore", expectedScore);
+        intentAssert.hasFlags(FLAG_ACTIVITY_SINGLE_TOP);
+    }
+
+    @Test
+    public void clickOnNext_showsNextPage_whenPageIsNotLastPage() throws Exception {
+        gagPager.setCurrentItem(GAG_PAGE_COUNT - 2);
+
+        nextGag.performClick();
+
+        assertThat(gagPager.getCurrentItem()).isEqualTo(GAG_PAGE_COUNT - 1);
     }
 
     private void faceDetectsWithSmileyProbability(float smileyProbability) {

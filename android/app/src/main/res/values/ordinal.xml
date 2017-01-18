@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="ordinal_numbers">
+        <item>첫번째</item>
+        <item>두번째</item>
+        <item>세번째</item>
+        <item>네번째</item>
+        <item>다섯번째</item>
+        <item>여섯번째</item>
+        <item>일곱번째</item>
+        <item>여덟번째</item>
+        <item>아홉번째</item>
+        <item>열번째</item>
+    </string-array>
+</resources>

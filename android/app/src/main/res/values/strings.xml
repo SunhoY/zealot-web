@@ -18,4 +18,9 @@
     <string name="your_ajae_power">당신의 아재력</string>
     <string name="storage_permission_needed">권한을 부여하지 않으면 아재력을 퍼뜨릴 수 없어요 ㅠㅠ</string>
     <string name="camera_permission_needed">카메라 권한이 없으면 아재력을 측정할 수 없어요 ㅠㅠ</string>
+    <string name="to_home">집으로</string>
+    <string name="first">첫번째</string>
+    <string name="next">다음</string>
+    <string name="previous">이전</string>
+    <string name="result">결과</string>
 </resources>
