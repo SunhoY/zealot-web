@@ -1,0 +1,40 @@
+exports[`Landing Test renders correctly 1`] = `
+<div
+  className="background"
+  style={
+    Object {
+      "height": "100%",
+      "width": "100%",
+    }
+  }>
+  <div
+    style={
+      Object {
+        "paddingTop": "100px",
+        "textAlign": "center",
+        "width": "100%",
+      }
+    }>
+    <div
+      style={
+        Object {
+          "color": "#ffffff",
+          "fontFamily": "baemin",
+          "fontSize": "180px",
+        }
+      }>
+      아재력
+    </div>
+    <div
+      style={
+        Object {
+          "color": "#ffffff",
+          "fontFamily": "baemin",
+          "fontSize": "180px",
+        }
+      }>
+      테스트
+    </div>
+  </div>
+</div>
+`;

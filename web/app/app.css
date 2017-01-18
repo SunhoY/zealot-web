@@ -1,0 +1,9 @@
+@font-face {
+    font-family: baemin;
+    src: url(./assets/font/BMDOHYEON.ttf);
+}
+
+.background {
+    background-image: url(./assets/image/background.png);
+    background-size: 100%;
+}
