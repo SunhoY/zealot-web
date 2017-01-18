@@ -103,7 +103,7 @@ public class ResultActivityTest {
     public void onCreate_setsAjaeScore() throws Exception {
         setUp(95, POWER_NO_MATTER);
 
-        assertThat(ajaeScore.getText()).isEqualTo("95 점");
+        assertThat(ajaeScore.getText()).isEqualTo("95 %");
     }
 
     @Test

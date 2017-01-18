@@ -42,7 +42,7 @@ public class ResultActivity extends ZealotBaseActivity {
         int score = getIntent().getIntExtra(AJAE_SCORE, 100);
 
         ajaeScoreText = String.valueOf(score);
-        ajaeScore.setText(getResources().getString(R.string.score, score));
+        ajaeScore.setText(getResources().getString(R.string.x_percentage, score));
 
         ajaeScore.setAjaeState(getAjaeStateByScore(score));
         resultImage.setAjaeState(getAjaeStateByScore(score));
