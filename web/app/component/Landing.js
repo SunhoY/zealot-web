@@ -1,4 +1,7 @@
 import React, {Component} from 'react';
+import AjaeIndicatingImage from 'component/AjaeIndicatingImage';
+import AjaeIndicatingText from 'component/AjaeIndicatingText';
+import AjaePercentage from 'component/AjaePercentage';
 
 const styles = {
     container: {
@@ -32,6 +35,9 @@ class Landing extends Component {
                     <div style={Object.assign(styles.baeminFont, styles.textLarge)}>아재력</div>
                     <div style={Object.assign(styles.baeminFont, styles.textLarge)}>테스트</div>
                 </div>
+                <AjaePercentage percentage={this.props.percentage} nickName={this.props.nickName} />
+                <AjaeIndicatingImage percentage={this.props.percentage}/>
+                <AjaeIndicatingText percentage={this.props.percentage} />
             </div>
         );
     }
