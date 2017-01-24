@@ -2,12 +2,6 @@ package io.harry.zealot.activity;
 
 import android.content.Intent;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.google.common.collect.Range;
-import com.google.common.collect.RangeMap;
-import com.google.common.collect.TreeRangeMap;
 
 import org.assertj.android.api.content.IntentAssert;
 import org.junit.After;
@@ -27,11 +21,11 @@ import butterknife.ButterKnife;
 import io.harry.zealot.BuildConfig;
 import io.harry.zealot.R;
 import io.harry.zealot.TestZealotApplication;
-import io.harry.zealot.module.AjaeScoreModule;
 import io.harry.zealot.range.AjaeScoreRange;
 import io.harry.zealot.state.AjaePower;
-import io.harry.zealot.view.AjaeIndicateImageView;
-import io.harry.zealot.view.AjaeIndicateTextView;
+import io.harry.zealot.view.AjaeImageView;
+import io.harry.zealot.view.AjaeMessageView;
+import io.harry.zealot.view.AjaePercentageView;
 
 import static io.harry.zealot.state.AjaePower.FULL;
 import static io.harry.zealot.state.AjaePower.MEDIUM;
@@ -50,32 +44,38 @@ public class ResultActivityTest {
     private ResultActivity subject;
 
     @BindView(R.id.ajae_score)
-    AjaeIndicateTextView ajaeScore;
+    AjaePercentageView ajaeScore;
     @BindView(R.id.test_again)
     Button testAgain;
     @BindView(R.id.result_message)
-    TextView resultMessage;
+    AjaeMessageView resultMessage;
     @BindView(R.id.share_sns)
     Button share;
     @BindView(R.id.result_image)
-    AjaeIndicateImageView resultImage;
+    AjaeImageView resultImage;
 
     @Inject
     AjaeScoreRange mockAjaeScoreRange;
 
-    private Field ajaeStateOfTextView;
+    private Field ajaeStateOfPercentageView;
     private Field ajaeStateOfImageView;
-    private AjaePower ajaeStateValueOfTextView;
+    private Field ajaeStateOfMessageView;
+
+    private AjaePower ajaeStateValueOfPercentageView;
     private AjaePower ajaeStateValueOfImageView;
+    private AjaePower ajaeStateValueOfMessageView;
 
 
     @Before
     public void setUp() throws Exception {
-        ajaeStateOfTextView = AjaeIndicateTextView.class.getDeclaredField("ajaeState");
-        ajaeStateOfTextView.setAccessible(true);
+        ajaeStateOfPercentageView = AjaePercentageView.class.getDeclaredField("ajaePower");
+        ajaeStateOfPercentageView.setAccessible(true);
 
-        ajaeStateOfImageView = AjaeIndicateImageView.class.getDeclaredField("ajaeState");
+        ajaeStateOfImageView = AjaeImageView.class.getDeclaredField("ajaePower");
         ajaeStateOfImageView.setAccessible(true);
+
+        ajaeStateOfMessageView = AjaeMessageView.class.getDeclaredField("ajaePower");
+        ajaeStateOfMessageView.setAccessible(true);
     }
 
     public void setUp(int score, AjaePower ajaePower) throws Exception {
@@ -89,13 +89,14 @@ public class ResultActivityTest {
         subject = Robolectric.buildActivity(ResultActivity.class).withIntent(intent).create().get();
         ButterKnife.bind(this, subject);
 
-        ajaeStateValueOfTextView = (AjaePower) ajaeStateOfTextView.get(this.ajaeScore);
+        ajaeStateValueOfPercentageView = (AjaePower) ajaeStateOfPercentageView.get(this.ajaeScore);
         ajaeStateValueOfImageView = (AjaePower) ajaeStateOfImageView.get(resultImage);
+        ajaeStateValueOfMessageView = (AjaePower) ajaeStateOfMessageView.get(resultMessage);
     }
 
     @After
     public void tearDown() throws Exception {
-        ajaeStateOfTextView.setAccessible(false);
+        ajaeStateOfPercentageView.setAccessible(false);
         ajaeStateOfImageView.setAccessible(false);
     }
 
@@ -107,30 +108,11 @@ public class ResultActivityTest {
     }
 
     @Test
-    public void onCreate_sets_fullAjae_image_textColor_andMessage_whenScoreIsOver90() throws Exception {
-        setUp(SCORE_NO_MATTER, AjaePower.FULL);
-
-        assertThat(resultMessage.getText()).isEqualTo("빼박캔트\n진성아재");
-    }
-
-    @Test
-    public void onCreate_sets_mediumAjae_image_textColor_andMessage_whenScoreIsOver70andUnder90() throws Exception {
-        setUp(SCORE_NO_MATTER, AjaePower.MEDIUM);
-        assertThat(resultMessage.getText()).isEqualTo("아직까진\n젊은오빠");
-    }
-
-    @Test
-    public void onCreate_notAjae_image_textColor_andMessage_whenScoreIsUnder70() throws Exception {
-        setUp(SCORE_NO_MATTER, AjaePower.NO);
-
-        assertThat(resultMessage.getText()).isEqualTo("자라나는\n어린새싹");
-    }
-
-    @Test
     public void onCreate_changesStateOfScoreAndAjaeImageAsNotAjae_whenScoreIsUnder70() throws Exception {
         setUp(SCORE_NO_MATTER, AjaePower.NO);
 
-        assertThat(ajaeStateValueOfTextView).isEqualTo(NO);
+        assertThat(ajaeStateValueOfPercentageView).isEqualTo(NO);
+        assertThat(ajaeStateValueOfMessageView).isEqualTo(NO);
         assertThat(ajaeStateValueOfImageView).isEqualTo(NO);
     }
 
@@ -138,7 +120,8 @@ public class ResultActivityTest {
     public void onCreate_changesStateOfScoreAndAjaeImageAsMediumAjae_whenScoreIsBetween70And90() throws Exception {
         setUp(SCORE_NO_MATTER, AjaePower.MEDIUM);
 
-        assertThat(ajaeStateValueOfTextView).isEqualTo(MEDIUM);
+        assertThat(ajaeStateValueOfPercentageView).isEqualTo(MEDIUM);
+        assertThat(ajaeStateValueOfMessageView).isEqualTo(MEDIUM);
         assertThat(ajaeStateValueOfImageView).isEqualTo(MEDIUM);
     }
 
@@ -146,7 +129,8 @@ public class ResultActivityTest {
     public void onCreate_changesStateOfScoreAndAjaeImageAsFullAjae_whenScoreIsOver90() throws Exception {
         setUp(SCORE_NO_MATTER, AjaePower.FULL);
 
-        assertThat(ajaeStateValueOfTextView).isEqualTo(FULL);
+        assertThat(ajaeStateValueOfPercentageView).isEqualTo(FULL);
+        assertThat(ajaeStateValueOfMessageView).isEqualTo(FULL);
         assertThat(ajaeStateValueOfImageView).isEqualTo(FULL);
     }
 

@@ -39,8 +39,10 @@ import io.harry.zealot.R;
 import io.harry.zealot.TestZealotApplication;
 import io.harry.zealot.adapter.GagPagerAdapter;
 import io.harry.zealot.helper.AnimationHelper;
+import io.harry.zealot.range.AjaeScoreRange;
 import io.harry.zealot.service.GagService;
 import io.harry.zealot.service.ServiceCallback;
+import io.harry.zealot.state.AjaePower;
 import io.harry.zealot.view.TestAjaePreview;
 import io.harry.zealot.viewpager.ZealotViewPager;
 import io.harry.zealot.vision.wrapper.ZealotCameraSourceWrapper;
@@ -50,6 +52,7 @@ import io.harry.zealot.wrapper.GagPagerAdapterWrapper;
 import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -92,6 +95,8 @@ public class TestAjaeActivityTest {
     ZealotCameraSourceWrapper mockCameraSourceWrapper;
     @Inject
     AnimationHelper mockAnimationHelper;
+    @Inject
+    AjaeScoreRange mockAjaeScoreRange;
 
     @Mock
     GagPagerAdapter mockGagPagerAdapter;
@@ -112,6 +117,8 @@ public class TestAjaeActivityTest {
         testFaceDetector = new FaceDetector.Builder(application).build();
         mockScaleXYAnimation = mock(Animation.class);
 
+        //TODO: has to be realistic
+        when(mockAjaeScoreRange.getRange(anyInt())).thenReturn(AjaePower.FULL);
         when(mockGagPagerAdapterWrapper.getGagPagerAdapter(any(FragmentManager.class), anyListOf(Uri.class)))
             .thenReturn(mockGagPagerAdapter);
         when(mockGagPagerAdapter.getCount()).thenReturn(GAG_PAGE_COUNT);

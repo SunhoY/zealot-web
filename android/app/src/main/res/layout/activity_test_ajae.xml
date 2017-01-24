@@ -87,15 +87,16 @@
                 android:text="@string/your_ajae_power"
                 />
 
-            <TextView
+            <io.harry.zealot.view.AjaePercentageView
                 fontPath="fonts/BMDOHYEON.ttf"
                 android:id="@+id/ajae_power_percentage"
-                android:layout_width="43dp"
+                android:layout_width="63dp"
                 android:layout_height="24dp"
                 android:text="0 %"
                 android:textSize="20sp"
                 android:textColor="@color/hot_pink"
                 android:layout_alignParentEnd="true"
+                android:gravity="end"
                 />
 
             <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar

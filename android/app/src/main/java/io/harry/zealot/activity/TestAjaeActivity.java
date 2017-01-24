@@ -27,8 +27,10 @@ import io.harry.zealot.R;
 import io.harry.zealot.adapter.GagPagerAdapter;
 import io.harry.zealot.helper.AnimationHelper;
 import io.harry.zealot.listener.FaceListener;
+import io.harry.zealot.range.AjaeScoreRange;
 import io.harry.zealot.service.GagService;
 import io.harry.zealot.service.ServiceCallback;
+import io.harry.zealot.view.AjaePercentageView;
 import io.harry.zealot.view.TestAjaePreview;
 import io.harry.zealot.viewpager.OnSwipeListener;
 import io.harry.zealot.viewpager.ZealotViewPager;
@@ -50,7 +52,7 @@ public class TestAjaeActivity extends ZealotBaseActivity implements FaceListener
     @BindView(R.id.progress)
     RoundCornerProgressBar ajaePowerProgress;
     @BindView(R.id.ajae_power_percentage)
-    TextView ajaePowerPercentage;
+    AjaePercentageView ajaePowerPercentage;
     @BindView(R.id.previous_gag)
     TextView previousGag;
     @BindView(R.id.next_gag)
@@ -72,6 +74,8 @@ public class TestAjaeActivity extends ZealotBaseActivity implements FaceListener
     ZealotCameraSourceWrapper cameraSourceWrapper;
     @Inject
     AnimationHelper animationHelper;
+    @Inject
+    AjaeScoreRange ajaeScoreRange;
 
     private GagPagerAdapter gagPagerAdapter;
     private FaceDetector faceDetector;
@@ -138,8 +142,11 @@ public class TestAjaeActivity extends ZealotBaseActivity implements FaceListener
         final int ajaeFullPower = getResources().getInteger(R.integer.ajae_full_power);
 
         int severityColorId = getAjaeSeverityLevel(progress);
+        int ajaePercentage = (int) (progress / 10);
+
         ajaePowerProgress.setProgressColor(ContextCompat.getColor(TestAjaeActivity.this, severityColorId));
-        ajaePowerPercentage.setText(getString(R.string.x_percentage, (int) (progress / 10)));
+        ajaePowerPercentage.setText(getString(R.string.x_percentage, ajaePercentage));
+        ajaePowerPercentage.setAjaePower(ajaeScoreRange.getRange(ajaePercentage));
 
         if (progress == ajaeFullPower) {
             launchResultActivity(ajaeFullPower);

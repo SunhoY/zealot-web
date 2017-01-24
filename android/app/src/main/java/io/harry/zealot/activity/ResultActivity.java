@@ -3,7 +3,6 @@ package io.harry.zealot.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.widget.TextView;
 
 import javax.inject.Inject;
 
@@ -13,8 +12,9 @@ import butterknife.OnClick;
 import io.harry.zealot.R;
 import io.harry.zealot.range.AjaeScoreRange;
 import io.harry.zealot.state.AjaePower;
-import io.harry.zealot.view.AjaeIndicateImageView;
-import io.harry.zealot.view.AjaeIndicateTextView;
+import io.harry.zealot.view.AjaeImageView;
+import io.harry.zealot.view.AjaeMessageView;
+import io.harry.zealot.view.AjaePercentageView;
 
 public class ResultActivity extends ZealotBaseActivity {
     private static final String AJAE_SCORE = "ajaeScore";
@@ -22,11 +22,11 @@ public class ResultActivity extends ZealotBaseActivity {
     private String ajaeScoreText;
 
     @BindView(R.id.ajae_score)
-    AjaeIndicateTextView ajaeScore;
+    AjaePercentageView ajaeScore;
     @BindView(R.id.result_image)
-    AjaeIndicateImageView resultImage;
+    AjaeImageView resultImage;
     @BindView(R.id.result_message)
-    TextView resultMessage;
+    AjaeMessageView resultMessage;
 
     @Inject
     AjaeScoreRange ajaeScoreRange;
@@ -44,29 +44,15 @@ public class ResultActivity extends ZealotBaseActivity {
         ajaeScoreText = String.valueOf(score);
         ajaeScore.setText(getResources().getString(R.string.x_percentage, score));
 
-        ajaeScore.setAjaeState(getAjaeStateByScore(score));
-        resultImage.setAjaeState(getAjaeStateByScore(score));
+        AjaePower ajaePower = getAjaeStateByScore(score);
 
-        resultMessage.setText(getResultMessageByScore(score));
+        ajaeScore.setAjaePower(ajaePower);
+        resultImage.setAjaePower(ajaePower);
+        resultMessage.setAjaePower(ajaePower);
     }
 
     private AjaePower getAjaeStateByScore(int score) {
         return ajaeScoreRange.getRange(score);
-    }
-
-    private int getResultMessageByScore(int score) {
-        AjaePower range = ajaeScoreRange.getRange(score);
-
-        switch (range) {
-            case FULL:
-                return R.string.real_ajae_message;
-            case MEDIUM:
-                return R.string.medium_ajae_message;
-            case NO:
-                return R.string.not_ajae_message;
-        }
-
-        return -1;
     }
 
     @OnClick(R.id.test_again)
