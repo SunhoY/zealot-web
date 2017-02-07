@@ -2,12 +2,12 @@ import React, {Component} from 'react';
 
 const styles = {
     container: {
+        padding: "20px",
         textAlign: "center",
-        height: "140px",
-        fontSize: "130px",
+        height: "160px",
+        fontSize: "70px",
         fontFamily: "baemin",
         color: "#ffffff",
-        marginTop: "60px"
     }
 };
 
@@ -24,13 +24,15 @@ class AjaePercentage extends Component {
         } else {
             this.ajaeMessageColor = "full_ajae_color";
         }
+
+        this.nickName = decodeURI(props.nickName);
     }
 
     render() {
         return (
             <div style={styles.container}>
-                <div>{this.props.nickName} 님의 아재력</div>
-                <div style={{marginTop: "60px"}} className={this.ajaeMessageColor}>{this.props.percentage} %</div>
+                <div>{this.nickName} 님의 아재력</div>
+                <div style={{marginTop: "10px"}} className={this.ajaeMessageColor}>{this.props.percentage} %</div>
             </div>
         );
     }

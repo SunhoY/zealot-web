@@ -21,30 +21,30 @@
 }
 .not_ajae_image {
     background: url(./assets/image/not_ajae.png) no-repeat center;
-    background-size: auto;
+    background-size: contain;
 }
 
 .medium_ajae_image {
     background: url(./assets/image/medium_ajae.png) no-repeat center;
-    background-size: auto;
+    background-size: contain;
 }
 
 .full_ajae_image {
     background: url(./assets/image/full_ajae.png) no-repeat center;
-    background-size: auto;
+    background-size: contain;
 }
 
 .not_ajae_message {
-    font-family: baemin;
-    font-size: 130px;
+    font-family: baemin sans-serif;
+    font-size: 80px;
 }
 
 .medium_ajae_message {
-    font-family: baemin;
-    font-size: 130px;
+    font-family: baemin sans-serif;
+    font-size: 80px;
 }
 
 .full_ajae_message {
-    font-family: baemin;
-    font-size: 130px;
+    font-family: baemin sans-serif;
+    font-size: 80px;
 }

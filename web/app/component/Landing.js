@@ -10,7 +10,7 @@ const styles = {
     },
     title: {
         width: "100%",
-        paddingTop: "100px",
+        padding: "20px",
         textAlign: "center"
     },
     centerAlign: {
@@ -22,7 +22,7 @@ const styles = {
         fontFamily: "baemin"
     },
     textLarge: {
-        fontSize: "180px",
+        fontSize: "70px",
         color: "#ffffff"
     },
 };

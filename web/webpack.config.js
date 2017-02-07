@@ -16,6 +16,12 @@ module.exports = {
         path: __dirname + "/dist"
     },
     module: {
+        preLoaders: [
+            {
+                test: /\.json$/,
+                loader: 'json'
+            }
+        ],
         loaders: [
             {
                 test: /\.jsx?$/,
