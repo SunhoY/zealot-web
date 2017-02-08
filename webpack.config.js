@@ -3,10 +3,10 @@ var webpack = require('webpack');
 
 module.exports = {
     context: __dirname + "/app",
-    entry: {
-        javascript: './index.js',
-        html: "./index.html",
-    },
+    entry: [
+        './index.js',
+        "./index.html"
+    ],
     resolve: {
         extensions: ['', '.js'],
         root: path.resolve(__dirname, "./app")
@@ -15,13 +15,8 @@ module.exports = {
         filename: 'bundle.js',
         path: __dirname + "/dist"
     },
+    target: "node",
     module: {
-        preLoaders: [
-            {
-                test: /\.json$/,
-                loader: 'json'
-            }
-        ],
         loaders: [
             {
                 test: /\.jsx?$/,
@@ -43,7 +38,18 @@ module.exports = {
             {
                 test: /\.ttf$/,
                 loader: "file?name=assets/font/[name].[ext]"
+            },
+            {
+                test: /\.json$/,
+                loader: 'json'
             }
         ]
-    }
+    },
+    plugins: [
+        new webpack.DefinePlugin({
+            "process.env": {
+                NODE_ENV: JSON.stringify("production")
+            }
+        })
+    ]
 };
